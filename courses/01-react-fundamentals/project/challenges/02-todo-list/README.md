@@ -1,12 +1,8 @@
 # Challenge 02: Todo List Application
 
-## Overview
-
-Build a functional todo list where users can add, complete, and delete tasks.
-
 ## Problem Statement
 
-Create a todo list application with the following features:
+Build a functional todo list where users can add, complete, and delete tasks. Create a todo list application with the following features:
 - Input field to add new todos
 - List of todos with checkboxes to mark as complete
 - Delete button for each todo
@@ -105,14 +101,12 @@ The following industry standards will be checked:
 - **Adding todos**: Controlled input + button or form submit. Tests look for an input (placeholder "add todo") and a button with name matching /add/i.
 - **Toggling and deleting**: Update state by id (toggle `completed`, or filter out for delete). Completed items must be visually distinct (e.g. strikethrough).
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement the component** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check `/challenge/02-todo-list`
 4. **Run review** - `npm run review -- --challenge=02-todo-list` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

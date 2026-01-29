@@ -1,12 +1,8 @@
 # Challenge 03: Fullstack Features and Metadata
 
-## Overview
-
-Implement advanced Next.js features including Client Components, metadata, and form handling.
-
 ## Problem Statement
 
-Build a complete fullstack feature that:
+Implement advanced Next.js features including Client Components, metadata, and form handling. Build a complete fullstack feature that:
 1. Uses Client Components for interactivity
 2. Implements metadata for SEO
 3. Creates forms with Server Actions or API routes
@@ -105,14 +101,12 @@ The following industry standards will be checked:
 - **Server Actions**: Create async functions in Server Components or separate files, marked with 'use server'.
 - **Metadata**: Export `metadata` object or `generateMetadata` function from page files.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement fullstack features** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and test the form
 4. **Run review** - `npm run review -- --challenge=03-fullstack-features` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

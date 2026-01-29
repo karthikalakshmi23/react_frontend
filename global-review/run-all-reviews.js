@@ -109,7 +109,6 @@ async function main() {
   console.log(`Pathway: ${pathwaySummary.pathwayName}`);
   console.log(`Overall Score: ${pathwaySummary.overallScore.toFixed(1)}%`);
   console.log(`Completion: ${pathwaySummary.completionPercentage.toFixed(1)}%`);
-  console.log(`Badge Level: ${pathwaySummary.badgeLevel}`);
   console.log(`\n✅ Pathway summary saved to: ${PATHWAY_SUMMARY}`);
 }
 

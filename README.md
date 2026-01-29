@@ -79,22 +79,34 @@ npm run dev
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## 📈 Progress Summary
 
-**Last updated:** 1/29/2026, 8:03:19 PM
+**Last updated:** 1/29/2026, 9:14:53 PM
 
 ### Pathway
 
 | Metric | Value |
 |--------|-------|
 | Challenges completed | 0 / 9 (0%) |
-| Overall score | 34.4% |
+| Overall score | 34.2% |
 
 ### By course
 
 | Course | Completed | Score | Status |
 |--------|-----------|-------|--------|
-| React Fundamentals | 0/3 (0%) | 59.2% | Fail |
+| React Fundamentals | 0/3 (0%) | 58.5% | Fail |
 | RTK Query | 0/3 (0%) | 21.9% | Fail |
 | Next.js App Router | 0/3 (0%) | 22.5% | Fail |
 
@@ -178,7 +190,7 @@ Each challenge is scored using **6 layers**:
 
 When dashboard is running (http://localhost:7700), you can:
 
-- ✅ **View pathway summary** - Overall score, completion %, badge level
+- ✅ **View pathway summary** - Overall score, completion %
 - ✅ **Browse all courses** - Paginated list (supports 50+ courses)
 - ✅ **Browse challenges** - Per-course, paginated (supports 100+ challenges)
 - ✅ **Read instructions** - Challenge README with **markdown formatting** (headings, code blocks, lists)

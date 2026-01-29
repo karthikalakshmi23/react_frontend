@@ -1,12 +1,8 @@
 # Challenge 03: Mutations and Optimistic Updates
 
-## Overview
-
-Implement mutations (create, update, delete) with optimistic updates.
-
 ## Problem Statement
 
-Add mutation endpoints to create, update, and delete users or posts. Implement optimistic updates for better UX.
+Implement mutations (create, update, delete) with optimistic updates. Add mutation endpoints to create, update, and delete users or posts. Implement optimistic updates for better UX.
 
 ## Instructions
 
@@ -100,14 +96,12 @@ The following industry standards will be checked:
 - **Optimistic updates**: Use `onQueryStarted` in mutation endpoints to update cache optimistically before the server responds.
 - **Cache invalidation**: Use `invalidatesTags` to invalidate related cache entries when mutations succeed.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement mutations** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check `/challenge/03-mutations`
 4. **Run review** - `npm run review -- --challenge=03-mutations` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

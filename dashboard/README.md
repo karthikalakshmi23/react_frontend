@@ -23,7 +23,7 @@ Or from root: `npm run dashboard` (after `npm run dashboard:build` once).
 
 ## What the dashboard does
 
-- **Pathway summary** – Overall score, completion %, badge, challenges completed
+- **Pathway summary** – Overall score, completion %, challenges completed
 - **Courses list** – Paginated (20 per page), supports 50+ courses
 - **Challenges per course** – Paginated (50 per page), supports 100+ challenges
 - **Challenge detail** – Instructions (README), last results, AI feedback

@@ -1,12 +1,8 @@
 # Challenge 03: State Management with Context
 
-## Overview
-
-Implement a theme switcher using React Context API to manage global state.
-
 ## Problem Statement
 
-Create a theme system that allows users to switch between light and dark modes. The theme should be:
+Implement a theme switcher using React Context API to manage global state. Create a theme system that allows users to switch between light and dark modes. The theme should be:
 - Accessible throughout the app via Context
 - Persisted to localStorage
 - Applied to all components
@@ -105,14 +101,12 @@ The following industry standards will be checked:
 - **Persistence**: Read/write `localStorage` in a `useEffect` (or when toggling) so the theme survives refresh. Key name is up to you; tests check behavior.
 - **ThemeToggle component**: A button that calls the context's toggle function. Must be used inside the Provider.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement the context** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check `/challenge/03-state-management`
 4. **Run review** - `npm run review -- --challenge=03-state-management` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

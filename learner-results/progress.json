@@ -1,9 +1,9 @@
 {
-  "lastUpdated": "2026-01-29T14:33:19.639Z",
+  "lastUpdated": "2026-01-29T15:44:53.987Z",
   "pathway": {
     "name": "Modern React Engineer",
     "version": "1.0.0",
-    "overallScore": 34.4,
+    "overallScore": 34.2,
     "completionPercentage": 0,
     "badgeLevel": "none",
     "totalChallenges": 9,
@@ -13,7 +13,7 @@
     "01-react-fundamentals": {
       "courseId": "01-react-fundamentals",
       "courseName": "React Fundamentals",
-      "averageScore": 59.2,
+      "averageScore": 58.5,
       "completionPercentage": 0,
       "badgeLevel": "none",
       "totalChallenges": 3,
@@ -23,15 +23,15 @@
           "challengeId": "01-user-profile",
           "challengeName": "User Profile Component",
           "passed": false,
-          "score": 59.2,
-          "lastRun": "2026-01-29T14:33:09.148Z",
+          "score": 58.45,
+          "lastRun": "2026-01-29T15:44:43.166Z",
           "scores": {
             "functionalTests": 60,
             "codeQuality": 100,
             "architecture": 0,
             "bestPractices": 100,
             "e2eTests": 0,
-            "aiReview": 88
+            "aiReview": 83
           }
         }
       }

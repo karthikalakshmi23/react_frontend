@@ -13,14 +13,22 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT_DIR = join(__dirname, '..');
+const PATHWAY_CONFIG = join(ROOT_DIR, 'pathway-review', 'pathway-config.json');
 
-const courses = ['01-react-fundamentals', '02-rtk-query', '03-nextjs-app-router'];
+let courseIds = [];
+if (existsSync(PATHWAY_CONFIG)) {
+  try {
+    const pathway = JSON.parse(readFileSync(PATHWAY_CONFIG, 'utf-8'));
+    courseIds = (pathway.courses || []).map(c => c.id);
+  } catch (e) { /* ignore */ }
+}
+
 let errors = 0;
 
 console.log('🔍 Validating repository structure...\n');
 
-// Validate each course
-for (const courseId of courses) {
+// Validate each course (from pathway config)
+for (const courseId of courseIds) {
   const courseDir = join(ROOT_DIR, 'courses', courseId);
   
   console.log(`Checking ${courseId}...`);
@@ -47,8 +55,8 @@ for (const courseId of courses) {
   try {
     const configPath = join(courseDir, 'course-config.json');
     const config = JSON.parse(readFileSync(configPath, 'utf-8'));
-    if (config.challenges.length !== 3) {
-      console.error(`  ❌ ${courseId}: Expected 3 challenges, found ${config.challenges.length}`);
+    if (!config.challenges || config.challenges.length < 1) {
+      console.error(`  ❌ ${courseId}: Expected at least one challenge, found ${config.challenges?.length || 0}`);
       errors++;
     }
   } catch (error) {

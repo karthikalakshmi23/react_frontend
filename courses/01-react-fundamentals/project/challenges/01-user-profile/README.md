@@ -1,12 +1,8 @@
 # Challenge 01: User Profile Component
 
-## Overview
-
-Build a user profile component that displays user information with proper React patterns.
-
 ## Problem Statement
 
-Create a `UserProfile` component that displays:
+Build a user profile component that displays user information with proper React patterns. Create a `UserProfile` component that displays:
 - User name
 - Email address
 - Profile picture (or placeholder)
@@ -99,14 +95,12 @@ The following industry standards will be checked:
 - **Props**: Type your props (name, email, avatar optional). See Technical Requirements above for exact prop names and types.
 - **File and export**: Component must live in `src/components/UserProfile.tsx` and be the default export. The review checks file path and patterns.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement the component** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check `/challenge/01-user-profile`
 4. **Run review** - `npm run review -- --challenge=01-user-profile` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

@@ -49,9 +49,18 @@ test('Scoring engine exists', existsSync(join(ROOT_DIR, 'global-review', 'scorin
 test('AI review aggregator exists', existsSync(join(ROOT_DIR, 'global-review', 'ai-review', 'index.js')), 'ai-review/index.js missing');
 test('GitHub workflow exists', existsSync(join(ROOT_DIR, '.github', 'workflows', 'solo-skill-review.yml')), 'solo-skill-review.yml missing');
 
-// Test 2: Course structure
+// Test 2: Course structure (courses from pathway-config.json)
 console.log('\n📚 Testing Course Structure...');
-const courses = ['01-react-fundamentals', '02-rtk-query', '03-nextjs-app-router'];
+let pathwayConfig;
+try {
+  pathwayConfig = JSON.parse(readFileSync(join(ROOT_DIR, 'pathway-review', 'pathway-config.json'), 'utf-8'));
+} catch (e) {
+  pathwayConfig = { courses: [] };
+}
+const courses = (pathwayConfig.courses || []).map(c => c.id);
+if (courses.length === 0) {
+  test('At least one course in pathway config', false, 'pathway-config.json has no courses');
+}
 
 for (const courseId of courses) {
   const courseDir = join(ROOT_DIR, 'courses', courseId);
@@ -68,13 +77,13 @@ for (const courseId of courses) {
   const projectDir = join(courseDir, 'project');
   test(`  ${courseId} project package.json exists`, existsSync(join(projectDir, 'package.json')), 'package.json missing');
   
-  // Test challenges
+  // Test challenges (any count; config must match)
   const challengesDir = join(projectDir, 'challenges');
   if (existsSync(challengesDir)) {
     const challenges = readdirSync(challengesDir).filter(f => 
       statSync(join(challengesDir, f)).isDirectory()
     );
-    test(`  ${courseId} has 3 challenges`, challenges.length === 3, `Expected 3 challenges, found ${challenges.length}`);
+    test(`  ${courseId} has at least one challenge`, challenges.length >= 1, `Expected at least 1 challenge, found ${challenges.length}`);
     
     for (const challenge of challenges) {
       const challengeDir = join(challengesDir, challenge);
@@ -112,7 +121,7 @@ for (const courseId of courses) {
     if (existsSync(configPath)) {
       const config = JSON.parse(readFileSync(configPath, 'utf-8'));
       test(`  ${courseId} config is valid JSON`, true, '');
-      test(`  ${courseId} has 3 challenges in config`, config.challenges && config.challenges.length === 3, `Expected 3 challenges, found ${config.challenges?.length || 0}`);
+      test(`  ${courseId} has at least one challenge in config`, config.challenges && config.challenges.length >= 1, `Expected at least 1 challenge, found ${config.challenges?.length || 0}`);
       test(`  ${courseId} has scoring config`, config.scoring !== undefined, 'scoring config missing');
     }
   } catch (error) {
@@ -123,10 +132,10 @@ for (const courseId of courses) {
 // Test 5: Validate pathway config
 console.log('\n🛤️  Validating Pathway Configuration...');
 try {
-  const pathwayConfig = JSON.parse(readFileSync(join(ROOT_DIR, 'pathway-review', 'pathway-config.json'), 'utf-8'));
+  const pathway = JSON.parse(readFileSync(join(ROOT_DIR, 'pathway-review', 'pathway-config.json'), 'utf-8'));
   test('Pathway config is valid JSON', true, '');
-  test('Pathway has 3 courses', pathwayConfig.courses && pathwayConfig.courses.length === 3, `Expected 3 courses, found ${pathwayConfig.courses?.length || 0}`);
-  test('Pathway has badge levels', pathwayConfig.badgeLevels !== undefined, 'badgeLevels missing');
+  test('Pathway has at least one course', pathway.courses && pathway.courses.length >= 1, `Expected at least 1 course, found ${pathway.courses?.length || 0}`);
+  test('Pathway has badge levels', pathway.badgeLevels !== undefined, 'badgeLevels missing');
 } catch (error) {
   test('Pathway config is valid JSON', false, error.message);
 }

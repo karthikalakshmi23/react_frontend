@@ -1,12 +1,8 @@
 # Challenge 01: Server Components and Basic Routing
 
-## Overview
-
-Create your first Next.js App Router page with Server Components and basic routing.
-
 ## Problem Statement
 
-Build a simple Next.js app with:
+Create your first Next.js App Router page with Server Components and basic routing. Build a simple Next.js app with:
 1. A home page using Server Components
 2. A basic navigation structure
 3. A simple about page
@@ -102,14 +98,12 @@ The following industry standards will be checked:
 - **Navigation**: Use Next.js `Link` component from `next/link` for client-side navigation.
 - **File-based routing**: Create `app/about/page.tsx` to create `/about` route automatically.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement the pages** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check navigation
 4. **Run review** - `npm run review -- --challenge=01-server-components` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

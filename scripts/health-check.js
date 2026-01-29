@@ -46,11 +46,18 @@ try {
   errors++;
 }
 
-// Check course structures
+// Check course structures (from pathway config)
 console.log('\n📚 Checking course structures...');
-const courses = ['01-react-fundamentals', '02-rtk-query', '03-nextjs-app-router'];
+let courseIds = [];
+try {
+  const pathwayPath = join(ROOT_DIR, 'pathway-review', 'pathway-config.json');
+  if (existsSync(pathwayPath)) {
+    const pathway = JSON.parse(readFileSync(pathwayPath, 'utf-8'));
+    courseIds = (pathway.courses || []).map(c => c.id);
+  }
+} catch (e) { /* ignore */ }
 
-for (const courseId of courses) {
+for (const courseId of courseIds) {
   const courseDir = join(ROOT_DIR, 'courses', courseId);
   if (!existsSync(courseDir)) {
     console.log(`   ❌ Course ${courseId} directory not found`);
@@ -115,15 +122,15 @@ if (!existsSync(join(ROOT_DIR, '.github', 'workflows', 'solo-skill-review.yml'))
 // Dependencies (optional)
 console.log('\n📦 Checking dependencies (optional)...');
 let depsInstalled = 0;
-for (const courseId of courses) {
+for (const courseId of courseIds) {
   const nodeModules = join(ROOT_DIR, 'courses', courseId, 'project', 'node_modules');
   if (existsSync(nodeModules)) depsInstalled++;
 }
-if (depsInstalled === 0) {
+if (depsInstalled === 0 && courseIds.length > 0) {
   console.log('   ⚠️  No dependencies installed (run setup scripts)');
   warnings++;
-} else {
-  console.log(`   ✅ Dependencies installed for ${depsInstalled}/3 courses`);
+} else if (courseIds.length > 0) {
+  console.log(`   ✅ Dependencies installed for ${depsInstalled}/${courseIds.length} courses`);
 }
 
 console.log('\n' + '='.repeat(60));

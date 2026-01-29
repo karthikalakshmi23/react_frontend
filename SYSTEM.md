@@ -726,6 +726,18 @@ README evidence (human-readable in READMEs)
 
 ## Extending the System
 
+### Pluggable: No Code Changes for Count
+
+**All automation and scripts are driven by config.** You can add any number of courses and challenges without changing review-engine code, scripts, or dashboard.
+
+- **Course list**: Read from `pathway-review/pathway-config.json`. Add a course there and create the course folder; setup, global review, dashboard, progress, and README evidence all pick it up.
+- **Challenge list**: Read from each `courses/{course}/course-config.json`. Add a challenge there and create the challenge folder; the course review engine loops over `config.challenges`.
+- **Smart review (review:changed)**: Uses `scripts/lib/file-to-challenge-map.js`, which builds the map from pathway config + `challenges/*/metadata.json` and `metadata.filesToCheck`. No script edit needed—ensure each challenge has `metadata.json` with `filesToCheck` (list of project-relative files) so changed files map to the right challenge.
+
+**You only add:** config entries, course/challenge folders, tests, and READMEs. Review setup, scoring, progress, and dashboard work for any count of courses and challenges.
+
+---
+
 ### Adding a New Course
 
 1. **Create course directory**: `courses/{course-id}/`
@@ -735,8 +747,9 @@ README evidence (human-readable in READMEs)
    - Adapt test runners, linters, architecture checkers for your tech stack
 4. **Create AI review**: `courses/{course-id}/ai-review/index.js`
 5. **Create config**: `courses/{course-id}/course-config.json`
-6. **Add to pathway**: Update `pathway-review/pathway-config.json`
-7. **Update file mapping**: Add to `scripts/lib/file-to-challenge-map.js` (for smart review)
+6. **Add to pathway**: Update `pathway-review/pathway-config.json` (add one entry to `courses` array)
+
+No other code changes. Setup, health-check, ci-validate, global review, dashboard, and progress all read courses from pathway config.
 
 ---
 
@@ -744,10 +757,11 @@ README evidence (human-readable in READMEs)
 
 1. **Create challenge directory**: `courses/{course}/project/challenges/{challenge-id}/`
 2. **Create README.md**: Instructions + Technical Requirements section
-3. **Create metadata.json**: Challenge metadata
+3. **Create metadata.json**: Include `challengeId`, `challengeName`, and `filesToCheck` (array of project-relative paths, e.g. `["src/components/MyComponent.tsx"]`) so smart review can map file changes to this challenge
 4. **Add tests**: `project/tests/challenge-{id}.test.tsx` and `e2e/challenge-{id}.spec.ts`
-5. **Update course config**: Add challenge to `course-config.json`
-6. **Update file mapping**: Add to `scripts/lib/file-to-challenge-map.js`
+5. **Update course config**: Add challenge to `courses/{course}/course-config.json` in the `challenges` array
+
+No other code changes. The review engine iterates over `config.challenges`; file-to-challenge map is built from metadata.
 
 ---
 

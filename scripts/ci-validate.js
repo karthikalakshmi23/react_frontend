@@ -34,10 +34,31 @@ if (!existsSync(workflowPath)) {
   }
 }
 
+// Pathway config (source of course list)
+const pathwayConfigPath = join(ROOT_DIR, 'pathway-review', 'pathway-config.json');
+let courseIds = [];
+if (!existsSync(pathwayConfigPath)) {
+  console.log('   ❌ pathway-config.json missing');
+  errors++;
+} else {
+  try {
+    const config = JSON.parse(readFileSync(pathwayConfigPath, 'utf-8'));
+    if (!config.courses || config.courses.length < 1) {
+      console.log('   ❌ Pathway must have at least one course');
+      errors++;
+    } else {
+      courseIds = config.courses.map(c => c.id);
+      console.log(`   ✅ Pathway configuration valid (${courseIds.length} courses)`);
+    }
+  } catch (error) {
+    console.log(`   ❌ Invalid JSON - ${error.message}`);
+    errors++;
+  }
+}
+
 // Course configs
 console.log('\n📚 Validating course configurations...');
-const courses = ['01-react-fundamentals', '02-rtk-query', '03-nextjs-app-router'];
-for (const courseId of courses) {
+for (const courseId of courseIds) {
   const configPath = join(ROOT_DIR, 'courses', courseId, 'course-config.json');
   if (!existsSync(configPath)) {
     console.log(`   ❌ ${courseId}: course-config.json missing`);
@@ -46,11 +67,11 @@ for (const courseId of courses) {
   }
   try {
     const config = JSON.parse(readFileSync(configPath, 'utf-8'));
-    if (!config.challenges || !Array.isArray(config.challenges) || config.challenges.length !== 3) {
-      console.log(`   ❌ ${courseId}: Expected 3 challenges`);
+    if (!config.challenges || !Array.isArray(config.challenges) || config.challenges.length < 1) {
+      console.log(`   ❌ ${courseId}: Expected at least one challenge`);
       errors++;
     } else {
-      console.log(`   ✅ ${courseId}: Configuration valid`);
+      console.log(`   ✅ ${courseId}: Configuration valid (${config.challenges.length} challenges)`);
     }
   } catch (error) {
     console.log(`   ❌ ${courseId}: Invalid JSON - ${error.message}`);
@@ -58,30 +79,9 @@ for (const courseId of courses) {
   }
 }
 
-// Pathway config
-console.log('\n📋 Validating pathway configuration...');
-const pathwayConfigPath = join(ROOT_DIR, 'pathway-review', 'pathway-config.json');
-if (!existsSync(pathwayConfigPath)) {
-  console.log('   ❌ pathway-config.json missing');
-  errors++;
-} else {
-  try {
-    const config = JSON.parse(readFileSync(pathwayConfigPath, 'utf-8'));
-    if (!config.courses || config.courses.length !== 3) {
-      console.log('   ❌ Expected 3 courses in pathway');
-      errors++;
-    } else {
-      console.log('   ✅ Pathway configuration valid');
-    }
-  } catch (error) {
-    console.log(`   ❌ Invalid JSON - ${error.message}`);
-    errors++;
-  }
-}
-
 // Review engines
 console.log('\n🔧 Validating review engines...');
-for (const courseId of courses) {
+for (const courseId of courseIds) {
   const reviewEnginePath = join(ROOT_DIR, 'courses', courseId, 'review-engine', 'index.js');
   if (!existsSync(reviewEnginePath)) {
     console.log(`   ❌ ${courseId}: review-engine/index.js missing`);

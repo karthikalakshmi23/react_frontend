@@ -9,7 +9,6 @@ type Progress = {
     name: string;
     overallScore: number;
     completionPercentage: number;
-    badgeLevel: string;
     totalChallenges: number;
     completedChallenges: number;
   };
@@ -21,7 +20,6 @@ type CourseProgress = {
   courseName: string;
   averageScore: number;
   completionPercentage: number;
-  badgeLevel: string;
   challenges: Record<string, { passed: boolean; score: number; lastRun: string | null }>;
 };
 
@@ -31,7 +29,6 @@ type Course = {
   weight?: number;
   averageScore?: number;
   completionPercentage?: number;
-  badgeLevel?: string;
 };
 
 type Challenge = {
@@ -117,6 +114,10 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [runningReview, setRunningReview] = useState<string | null>(null);
+  const [resultsCollapsed, setResultsCollapsed] = useState(false);
+  const [instructionsCollapsed, setInstructionsCollapsed] = useState(true);
+  const [courseSearch, setCourseSearch] = useState('');
+  const [challengeSearch, setChallengeSearch] = useState('');
 
   const fetchProgress = useCallback(async () => {
     try {
@@ -174,6 +175,57 @@ export default function App() {
     }
   }, []);
 
+  // URL routing - sync with URL params on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const courseId = params.get('course');
+    const challengeId = params.get('challenge');
+    
+    if (courseId) {
+      // Fetch course data first
+      fetch(`${API}/courses/${courseId}`)
+        .then(r => r.json())
+        .then(courseData => {
+          const course = { id: courseId, name: courseData.name || courseId };
+          setSelectedCourse(course);
+          if (challengeId) {
+            setSelectedChallengeId(challengeId);
+            setView('detail');
+          } else {
+            setSelectedChallengeId(null);
+            setView('challenges');
+          }
+        })
+        .catch(() => {
+          // If course not found, just show courses list
+          setView('courses');
+          setSelectedCourse(null);
+          setSelectedChallengeId(null);
+        });
+    }
+  }, []);
+
+  // Update URL when view/state changes
+  useEffect(() => {
+    // Build new URL params based on current state
+    const newParams = new URLSearchParams();
+    if (selectedCourse) {
+      newParams.set('course', selectedCourse.id);
+      if (selectedChallengeId) {
+        newParams.set('challenge', selectedChallengeId);
+      }
+    }
+    
+    const newSearch = newParams.toString();
+    const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
+    const currentUrl = window.location.pathname + window.location.search;
+    
+    // Only update if URL is different to avoid unnecessary updates
+    if (currentUrl !== newUrl) {
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [selectedCourse, selectedChallengeId, view]);
+
   useEffect(() => {
     fetchProgress();
   }, [fetchProgress]);
@@ -192,12 +244,14 @@ export default function App() {
   }, [view, selectedCourse, selectedChallengeId, fetchDetail]);
 
   const openChallenges = (course: Course) => {
-    setSelectedCourse(course);
+    setSelectedChallengeId(null);
     setChallengesPage(1);
+    setSelectedCourse(course);
     setView('challenges');
   };
 
   const openDetail = (challengeId: string) => {
+    // Update both state values - React will batch these updates
     setSelectedChallengeId(challengeId);
     setView('detail');
   };
@@ -234,12 +288,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="header">
-        <h1>Challenge Engine – Progress Dashboard</h1>
-        <p>View progress, instructions, and run reviews. Edit code in your editor.</p>
-      </header>
-
-      {progress && (
+      {progress && view === 'courses' && (
         <>
           <section className="progress-summary">
             <div className="progress-card">
@@ -252,11 +301,7 @@ export default function App() {
             </div>
             <div className="progress-card">
               <strong>Completion</strong>
-              <span>{pathway.completionPercentage ?? 0}%</span>
-            </div>
-            <div className="progress-card">
-              <strong>Badge</strong>
-              <span>{pathway.badgeLevel || 'none'}</span>
+              <span>{Math.round(pathway.completionPercentage ?? 0)}%</span>
             </div>
             <div className="progress-card">
               <strong>Challenges</strong>
@@ -277,7 +322,7 @@ export default function App() {
                 />
               </div>
               <div className="progress-bar-label">
-                {pathway.completedChallenges ?? 0} / {pathway.totalChallenges ?? 0} challenges completed ({pathway.completionPercentage ?? 0}%)
+                {pathway.completedChallenges ?? 0} / {pathway.totalChallenges ?? 0} challenges completed ({Math.round(pathway.completionPercentage ?? 0)}%)
               </div>
             </div>
           </section>
@@ -288,13 +333,28 @@ export default function App() {
 
       {view === 'courses' && (
         <>
-          <h2>Courses</h2>
+          <div className="view-header">
+            <h2>Courses</h2>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search courses..."
+              value={courseSearch}
+              onChange={(e) => setCourseSearch(e.target.value)}
+            />
+          </div>
           {loading ? (
             <div className="loading">Loading courses…</div>
           ) : (
             <>
               <div className="card-list">
-                {courses.map((c) => {
+                {courses
+                  .filter((c) =>
+                    !courseSearch ||
+                    c.name.toLowerCase().includes(courseSearch.toLowerCase()) ||
+                    c.id.toLowerCase().includes(courseSearch.toLowerCase())
+                  )
+                  .map((c) => {
                   const courseProgress = progress?.courses?.[c.id];
                   const passed = courseProgress?.completedChallenges ?? 0;
                   const total = courseProgress?.totalChallenges ?? 0;
@@ -304,7 +364,7 @@ export default function App() {
                       <div style={{ flex: 1 }}>
                         <h3>{c.name}</h3>
                         <div className="meta">
-                          Score: {c.averageScore ?? '—'}% · Completion: {c.completionPercentage ?? '—'}% · Badge: {c.badgeLevel ?? '—'}
+                          Score: {c.averageScore != null ? Math.round(c.averageScore) : '—'}% · Completion: {c.completionPercentage != null ? Math.round(c.completionPercentage) : '—'}%
                         </div>
                         <div className="course-progress-bar-container" style={{ marginTop: '0.75rem' }}>
                           <div className="progress-bar">
@@ -335,20 +395,66 @@ export default function App() {
         </>
       )}
 
-      {view === 'challenges' && selectedCourse && (
+      {view === 'challenges' && selectedCourse && progress && (
         <>
+          {progress.courses[selectedCourse.id] && (
+            <section className="course-progress-bar">
+              <div className="course-progress-stats">
+                <div className="stat-item">
+                  <span className="stat-label">Course Progress</span>
+                  <span className="stat-value">{Math.round(progress.courses[selectedCourse.id].completionPercentage || 0)}%</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Challenges</span>
+                  <span className="stat-value">{progress.courses[selectedCourse.id].completedChallenges || 0} / {progress.courses[selectedCourse.id].totalChallenges || 0}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Average Score</span>
+                  <span className="stat-value">{Math.round(progress.courses[selectedCourse.id].averageScore || 0)}%</span>
+                </div>
+              </div>
+              <div className="course-progress-bar-visual">
+                <div className="progress-bar-slim">
+                  <div 
+                    className="progress-bar-fill-slim" 
+                    style={{ width: `${progress.courses[selectedCourse.id].completionPercentage || 0}%` }}
+                  />
+                </div>
+              </div>
+            </section>
+          )}
           <div className="breadcrumb">
-            <a href="#" onClick={(e) => { e.preventDefault(); setView('courses'); }}>Courses</a>
+            <a href="#" onClick={(e) => { 
+              e.preventDefault(); 
+              setView('courses');
+              setSelectedCourse(null);
+              setSelectedChallengeId(null);
+            }}>Courses</a>
             {' / '}
             <span>{selectedCourse.name}</span>
           </div>
-          <h2>Challenges – {selectedCourse.name}</h2>
+          <div className="view-header">
+            <h2>Challenges – {selectedCourse.name}</h2>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search challenges..."
+              value={challengeSearch}
+              onChange={(e) => setChallengeSearch(e.target.value)}
+            />
+          </div>
           {loading ? (
             <div className="loading">Loading challenges…</div>
           ) : (
             <>
               <div className="card-list">
-                {challenges.map((ch) => (
+                {challenges
+                  .filter((ch) =>
+                    !challengeSearch ||
+                    ch.name.toLowerCase().includes(challengeSearch.toLowerCase()) ||
+                    ch.id.toLowerCase().includes(challengeSearch.toLowerCase())
+                  )
+                  .map((ch) => (
                   <div key={ch.id} className="card">
                     <div>
                       <h3>{ch.name}</h3>
@@ -356,20 +462,11 @@ export default function App() {
                         <span className={`badge ${ch.passed ? 'passed' : ch.score != null ? 'failed' : 'pending'}`}>
                           {ch.passed ? 'Passed' : ch.score != null ? 'Not passed' : 'Not run'}
                         </span>
-                        {ch.score != null && ` · Score: ${ch.score}%`}
+                        {ch.score != null && ` · Score: ${Math.round(ch.score)}%`}
                         {ch.lastRun && ` · Last run: ${new Date(ch.lastRun).toLocaleString()}`}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button type="button" onClick={() => openDetail(ch.id)}>Details</button>
-                      <button
-                        type="button"
-                        disabled={runningReview !== null}
-                        onClick={() => runReview(selectedCourse.id, ch.id)}
-                      >
-                        {runningReview === `${selectedCourse.id}/${ch.id}` ? 'Running…' : 'Run review'}
-                      </button>
-                    </div>
+                    <button type="button" onClick={() => openDetail(ch.id)}>Details</button>
                   </div>
                 ))}
               </div>
@@ -385,49 +482,120 @@ export default function App() {
         </>
       )}
 
-      {view === 'detail' && detail && selectedCourse && (
+      {view === 'detail' && detail && selectedCourse && progress && (
         <div className="detail-panel">
+          {progress.courses[selectedCourse.id] && (
+            <section className="course-progress-bar">
+              <div className="course-progress-stats">
+                <div className="stat-item">
+                  <span className="stat-label">Course Progress</span>
+                  <span className="stat-value">{Math.round(progress.courses[selectedCourse.id].completionPercentage || 0)}%</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Challenges</span>
+                  <span className="stat-value">{progress.courses[selectedCourse.id].completedChallenges || 0} / {progress.courses[selectedCourse.id].totalChallenges || 0}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Average Score</span>
+                  <span className="stat-value">{Math.round(progress.courses[selectedCourse.id].averageScore || 0)}%</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Badge</span>
+                  <span className="stat-value badge-small">{progress.courses[selectedCourse.id].badgeLevel || 'none'}</span>
+                </div>
+              </div>
+              <div className="course-progress-bar-visual">
+                <div className="progress-bar-slim">
+                  <div 
+                    className="progress-bar-fill-slim" 
+                    style={{ width: `${progress.courses[selectedCourse.id].completionPercentage || 0}%` }}
+                  />
+                </div>
+              </div>
+            </section>
+          )}
           <div className="back">
-            <button type="button" onClick={() => setView('challenges')}>← Back to challenges</button>
+            <button type="button" onClick={() => {
+              setSelectedChallengeId(null);
+              setView('challenges');
+            }}>← Back to challenges</button>
           </div>
           <div className="breadcrumb">
-            <a href="#" onClick={(e) => { e.preventDefault(); setView('courses'); }}>Courses</a>
+            <a href="#" onClick={(e) => { 
+              e.preventDefault(); 
+              setView('courses');
+              setSelectedCourse(null);
+              setSelectedChallengeId(null);
+            }}>Courses</a>
             {' / '}
-            <a href="#" onClick={(e) => { e.preventDefault(); setView('challenges'); }}>{selectedCourse.name}</a>
+            <a href="#" onClick={(e) => { 
+              e.preventDefault(); 
+              setSelectedChallengeId(null);
+              setView('challenges');
+            }}>{selectedCourse.name}</a>
             {' / '}
             <span>{detail.name}</span>
           </div>
-          <h2>{detail.name}</h2>
-          <p>
-            <span className={`badge ${detail.passed ? 'passed' : detail.score != null ? 'failed' : 'pending'}`}>
-              {detail.passed ? 'Passed' : detail.score != null ? 'Not passed' : 'Not run'}
-            </span>
-            {detail.score != null && ` Score: ${detail.score}%`}
-          </p>
-          <p>
+          <div className="detail-header">
+            <div>
+              <h2>{detail.name}</h2>
+              <div className="detail-meta">
+                <span className={`badge ${detail.passed ? 'passed' : detail.score != null ? 'failed' : 'pending'}`}>
+                  {detail.passed ? '✓ Passed' : detail.score != null ? '✗ Not passed' : '○ Not run'}
+                </span>
+                {detail.score != null && <span className="detail-score">Score: {detail.score}%</span>}
+              </div>
+            </div>
             <button
               type="button"
+              className="btn-primary"
               disabled={runningReview !== null}
               onClick={() => runReview(selectedCourse.id, detail.id)}
             >
-              {runningReview === `${selectedCourse.id}/${detail.id}` ? 'Running…' : 'Run review'}
+              {runningReview === `${selectedCourse.id}/${detail.id}` ? (
+                <>
+                  <span className="btn-spinner">⟳</span> Running review…
+                </>
+              ) : (
+                <>
+                  <span className="btn-icon">▶</span> Run review
+                </>
+              )}
             </button>
-          </p>
+          </div>
           {detail.instructions && (
-            <>
-              <h3>Instructions</h3>
-              <div className="instructions markdown-body">
-                <ReactMarkdown>{detail.instructions}</ReactMarkdown>
-              </div>
-            </>
+            <section className="instructions-section">
+              <h3 className="instructions-header" onClick={() => setInstructionsCollapsed(!instructionsCollapsed)}>
+                <span>Instructions</span>
+                <span className={`collapse-icon ${instructionsCollapsed ? 'collapsed' : ''}`}>▼</span>
+              </h3>
+              {!instructionsCollapsed && (
+                <div className="instructions markdown-body">
+                  <ReactMarkdown>{detail.instructions}</ReactMarkdown>
+                </div>
+              )}
+            </section>
           )}
           {detail.result && (
             <div className="review-results">
-              <h3>Review results</h3>
+              <div className="review-results-header">
+                <h3>Review results</h3>
+                <button
+                  type="button"
+                  className="btn-toggle"
+                  onClick={() => {
+                    const el = document.querySelector('.review-results-content');
+                    if (el) el.classList.toggle('collapsed');
+                  }}
+                >
+                  <span className="toggle-icon">▼</span> Toggle all
+                </button>
+              </div>
+              <div className="review-results-content">
               <div className="results-summary">
                 <div className="results-summary-row">
                   <strong>Total score</strong>
-                  <span>{typeof detail.result.totalScore === 'number' ? `${detail.result.totalScore.toFixed(1)}%` : '—'}</span>
+                  <span>{typeof detail.result.totalScore === 'number' ? `${Math.round(detail.result.totalScore)}%` : '—'}</span>
                 </div>
                 <div className="results-summary-row">
                   <strong>Passed</strong>
@@ -437,216 +605,332 @@ export default function App() {
                 </div>
               </div>
 
-              {detail.result.scores && Object.keys(detail.result.scores).length > 0 && (
-                <>
-                  <h4>Score breakdown</h4>
-                  <div className="results-table-wrap">
-                    <table className="results-table">
-                      <thead>
-                        <tr>
-                          <th>Layer</th>
-                          <th>Score</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(['functionalTests', 'codeQuality', 'architecture', 'bestPractices', 'e2eTests', 'aiReview'] as const).map((key) => {
-                          const labels: Record<string, string> = {
-                            functionalTests: 'Functional tests',
-                            codeQuality: 'Code quality (lint)',
-                            architecture: 'Architecture',
-                            bestPractices: 'Best practices',
-                            e2eTests: 'E2E tests',
-                            aiReview: 'AI review',
-                          };
-                          const v = detail.result!.scores![key];
-                          return typeof v === 'number' ? (
-                            <tr key={key}>
-                              <td>{labels[key] ?? key}</td>
-                              <td>{v.toFixed(0)}%</td>
-                            </tr>
-                          ) : null;
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
-
-              {detail.result.testResults && (
-                <section className="result-layer">
-                  <h4>Functional tests</h4>
-                  <div className="result-layer-score">
-                    Score: {typeof detail.result.testResults.score === 'number' ? `${detail.result.testResults.score.toFixed(0)}%` : '—'}
-                    {detail.result.testResults.totalTests != null && (
-                      <> · {detail.result.testResults.passedTests ?? 0}/{detail.result.testResults.totalTests} passed</>
-                    )}
-                  </div>
-                  {detail.result.testResults.error && (
-                    <p className="result-layer-error">{detail.result.testResults.error}</p>
-                  )}
-                  {detail.result.testResults.details?.map((suite, i) => (
-                    <div key={i}>
-                      {suite.assertionResults?.filter((a) => a.status === 'failed').map((a, j) => (
-                        <div key={j} className="result-issue">
-                          <strong>{a.title}</strong>
-                          {a.failureMessages?.map((msg, k) => (
-                            <p key={k} className="result-issue-msg">{msg}</p>
+              {(() => {
+                // Collect all layers with their scores
+                const layers: Array<{ key: string; score: number; component: JSX.Element }> = [];
+                
+                if (detail.result.testResults) {
+                  const score = typeof detail.result.testResults.score === 'number' ? Math.round(detail.result.testResults.score) : 0;
+                  layers.push({
+                    key: 'testResults',
+                    score,
+                    component: (
+                      <section key="testResults" className={`result-layer collapsible ${score === 100 ? 'result-layer-perfect' : ''}`}>
+                        <h4 className="result-layer-header" onClick={(e) => {
+                          const section = e.currentTarget.closest('.result-layer');
+                          if (section) section.classList.toggle('collapsed');
+                        }}>
+                          <span>Functional tests</span>
+                          <span className="collapse-icon">▼</span>
+                        </h4>
+                        <div className="result-layer-content">
+                          <div className="result-layer-score">
+                            Score: {score}%
+                            {detail.result.testResults.totalTests != null && (
+                              <> · {detail.result.testResults.passedTests ?? 0}/{detail.result.testResults.totalTests} passed</>
+                            )}
+                          </div>
+                          {detail.result.testResults.error && (
+                            <p className="result-layer-error">{detail.result.testResults.error}</p>
+                          )}
+                          {detail.result.testResults.details?.map((suite, i) => (
+                            <div key={i}>
+                              {suite.assertionResults?.filter((a) => a.status === 'failed').map((a, j) => (
+                                <div key={j} className="result-issue">
+                                  <strong>{a.title}</strong>
+                                  {a.failureMessages?.map((msg, k) => (
+                                    <p key={k} className="result-issue-msg">{msg}</p>
+                                  ))}
+                                </div>
+                              ))}
+                              {suite.message && <p className="result-issue-msg">{suite.message}</p>}
+                            </div>
                           ))}
-                        </div>
-                      ))}
-                      {suite.message && <p className="result-issue-msg">{suite.message}</p>}
-                    </div>
-                  ))}
-                </section>
-              )}
-
-              {detail.result.lintResults && (
-                <section className="result-layer">
-                  <h4>Code quality (lint)</h4>
-                  <div className="result-layer-score">
-                    Score: {typeof detail.result.lintResults.score === 'number' ? `${detail.result.lintResults.score.toFixed(0)}%` : '—'}
-                    {detail.result.lintResults.errors != null && detail.result.lintResults.warnings != null && (
-                      <> · {detail.result.lintResults.errors} error(s), {detail.result.lintResults.warnings} warning(s)</>
-                    )}
-                  </div>
-                  {detail.result.lintResults.details?.map((file, i) => (
-                    file.messages?.length ? (
-                      <div key={i} className="result-issue">
-                        <strong>{file.filePath.replace(/^.*[/\\]/, '')}</strong>
-                        {file.messages.map((m, j) => (
-                          <p key={j} className="result-issue-msg">Line {m.line}: {m.message}</p>
-                        ))}
-                      </div>
-                    ) : null
-                  ))}
-                </section>
-              )}
-
-              {detail.result.architectureResults && (
-                <section className="result-layer">
-                  <h4>Architecture</h4>
-                  <div className="result-layer-score">
-                    Score: {typeof detail.result.architectureResults.score === 'number' ? `${detail.result.architectureResults.score.toFixed(0)}%` : '—'}
-                  </div>
-                  {detail.result.architectureResults.patternsMissing?.length ? (
-                    <>
-                      <p className="result-issue-msg">
-                        Patterns expected but not found: <strong>{detail.result.architectureResults.patternsMissing.join(', ')}</strong>.
-                        Add these patterns to your code as required by the challenge.
-                      </p>
-                      <p className="result-issue-msg" style={{ marginTop: '0.25rem', fontSize: '0.85rem' }}>
-                        Hint: <code>useState</code> = React state hook; <code>props</code> = component props; <code>functionalComponent</code> = function component (not class).
-                      </p>
-                    </>
-                  ) : null}
-                  {detail.result.architectureResults.details?.map((d, i) => (
-                    (d.patternsMissing?.length || d.patternsFound?.length) ? (
-                      <div key={i} className="result-issue">
-                        <strong>{d.file}</strong>
-                        {d.patternsMissing?.length ? (
-                          <p className="result-issue-msg">Missing: {d.patternsMissing.join(', ')}</p>
-                        ) : null}
-                        {d.patternsFound?.length ? (
-                          <p className="result-issue-msg">Found: {d.patternsFound.join(', ')}</p>
-                        ) : null}
-                      </div>
-                    ) : null
-                  ))}
-                </section>
-              )}
-
-              {detail.result.bestPracticesResults && (
-                <section className="result-layer">
-                  <h4>Best practices</h4>
-                  <div className="result-layer-score">
-                    Score: {typeof detail.result.bestPracticesResults.score === 'number' ? `${detail.result.bestPracticesResults.score.toFixed(0)}%` : '—'}
-                  </div>
-                  {detail.result.bestPracticesResults.issues?.map((issue, i) => (
-                    <p key={i} className="result-issue-msg">• {typeof issue === 'string' ? issue : (issue as { message?: string }).message ?? 'Issue'}</p>
-                  ))}
-                  {detail.result.bestPracticesResults.details?.map((d, i) => (
-                    d.issues?.length ? (
-                      <div key={i} className="result-issue">
-                        <strong>{d.file}</strong>
-                        {d.issues.map((issue, j) => (
-                          <p key={j} className="result-issue-msg">• {typeof issue === 'string' ? issue : (issue as { message?: string }).message ?? 'Issue'}</p>
-                        ))}
-                      </div>
-                    ) : null
-                  ))}
-                </section>
-              )}
-
-              {detail.result.e2eResults && (
-                <section className="result-layer">
-                  <h4>E2E tests</h4>
-                  <div className="result-layer-score">
-                    Score: {typeof detail.result.e2eResults.score === 'number' ? `${detail.result.e2eResults.score.toFixed(0)}%` : '—'}
-                  </div>
-                  {detail.result.e2eResults.error && (
-                    <p className="result-layer-error">{detail.result.e2eResults.error}</p>
-                  )}
-                  {detail.result.e2eResults.note && (
-                    <p className="result-issue-msg">{detail.result.e2eResults.note}</p>
-                  )}
-                  {(detail.result.e2eResults as { details?: unknown[] }).details?.length ? (
-                    <p className="result-issue-msg">See test output for failed steps.</p>
-                  ) : null}
-                </section>
-              )}
-
-              {(detail.result.aiReviewResults || detail.aiFeedback) && (
-                <section className="result-layer result-layer-ai">
-                  <h4>AI review</h4>
-                  {(() => {
-                    const ai = detail.result.aiReviewResults || (detail.aiFeedback as Record<string, unknown>);
-                    if (!ai) return null;
-                    if (ai.error) {
-                      return (
-                        <p className="result-layer-error">
-                          AI review skipped: set GROQ_API_KEY to enable. Other layers still run.
-                        </p>
-                      );
-                    }
-                    return (
-                      <>
-                        <div className="result-layer-score">
-                          Score: {typeof ai.score === 'number' ? `${ai.score}%` : '—'}
-                          {typeof ai.readability === 'number' && (
-                            <> · Readability: {ai.readability}%</>
-                          )}
-                          {typeof ai.maintainability === 'number' && (
-                            <> · Maintainability: {ai.maintainability}%</>
+                          {score === 100 && (
+                            <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}>✅ All tests passed</p>
                           )}
                         </div>
-                        {ai.overall && (
-                          <p className="result-ai-overall">{ai.overall as string}</p>
-                        )}
-                        {Array.isArray(ai.strengths) && ai.strengths.length > 0 && (
-                          <div className="result-ai-list">
-                            <strong>Strengths</strong>
-                            <ul>
-                              {(ai.strengths as string[]).map((s, i) => (
-                                <li key={i}>{s}</li>
-                              ))}
-                            </ul>
+                      </section>
+                    )
+                  });
+                }
+
+                if (detail.result.lintResults) {
+                  const score = typeof detail.result.lintResults.score === 'number' ? Math.round(detail.result.lintResults.score) : 0;
+                  layers.push({
+                    key: 'lintResults',
+                    score,
+                    component: (
+                      <section key="lintResults" className={`result-layer collapsible ${score === 100 ? 'result-layer-perfect' : ''}`}>
+                        <h4 className="result-layer-header" onClick={(e) => {
+                          const section = e.currentTarget.closest('.result-layer');
+                          section?.classList.toggle('collapsed');
+                        }}>
+                          <span>Code quality (lint)</span>
+                          <span className="collapse-icon">▼</span>
+                        </h4>
+                        <div className="result-layer-content">
+                          <div className="result-layer-score">
+                            Score: {score}%
+                            {detail.result.lintResults.errors != null && detail.result.lintResults.warnings != null && (
+                              <> · {detail.result.lintResults.errors} error(s), {detail.result.lintResults.warnings} warning(s)</>
+                            )}
                           </div>
-                        )}
-                        {Array.isArray(ai.improvements) && ai.improvements.length > 0 && (
-                          <div className="result-ai-list">
-                            <strong>Improvements</strong>
-                            <ul>
-                              {(ai.improvements as string[]).map((s, i) => (
-                                <li key={i}>{s}</li>
-                              ))}
-                            </ul>
+                          {detail.result.lintResults.details?.map((file, i) => (
+                            file.messages?.length ? (
+                              <div key={i} className="result-issue">
+                                <strong>{file.filePath.replace(/^.*[/\\]/, '')}</strong>
+                                {file.messages.map((m, j) => (
+                                  <p key={j} className="result-issue-msg">Line {m.line}: {m.message}</p>
+                                ))}
+                              </div>
+                            ) : null
+                          ))}
+                          {score === 100 && (
+                            <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}>✅ No code quality issues</p>
+                          )}
+                        </div>
+                      </section>
+                    )
+                  });
+                }
+
+                if (detail.result.architectureResults) {
+                  const score = typeof detail.result.architectureResults.score === 'number' ? Math.round(detail.result.architectureResults.score) : 0;
+                  layers.push({
+                    key: 'architectureResults',
+                    score,
+                    component: (
+                      <section key="architectureResults" className={`result-layer collapsible ${score === 100 ? 'result-layer-perfect' : ''}`}>
+                        <h4 className="result-layer-header" onClick={(e) => {
+                          const section = e.currentTarget.closest('.result-layer');
+                          section?.classList.toggle('collapsed');
+                        }}>
+                          <span>Architecture</span>
+                          <span className="collapse-icon">▼</span>
+                        </h4>
+                        <div className="result-layer-content">
+                          <div className="result-layer-score">
+                            Score: {score}%
                           </div>
-                        )}
-                      </>
-                    );
-                  })()}
-                </section>
-              )}
+                          {detail.result.architectureResults.patternsMissing?.length ? (
+                            <>
+                              <p className="result-issue-msg">
+                                Patterns expected but not found: <strong>{[...new Set(detail.result.architectureResults.patternsMissing)].join(', ')}</strong>.
+                                Add these patterns to your code as required by the challenge.
+                              </p>
+                              <p className="result-issue-msg" style={{ marginTop: '0.25rem', fontSize: '0.85rem' }}>
+                                Hint: <code>useState</code> = React state hook; <code>props</code> = component props; <code>functionalComponent</code> = function component (not class).
+                              </p>
+                            </>
+                          ) : null}
+                          {detail.result.architectureResults.details?.map((d, i) => (
+                            (d.patternsMissing?.length || d.patternsFound?.length) ? (
+                              <div key={i} className="result-issue">
+                                <strong>{d.file}</strong>
+                                {d.patternsMissing?.length ? (
+                                  <p className="result-issue-msg">Missing: {d.patternsMissing.join(', ')}</p>
+                                ) : null}
+                                {d.patternsFound?.length ? (
+                                  <p className="result-issue-msg">Found: {d.patternsFound.join(', ')}</p>
+                                ) : null}
+                              </div>
+                            ) : null
+                          ))}
+                          {score === 100 && (
+                            <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}>✅ All required patterns found</p>
+                          )}
+                        </div>
+                      </section>
+                    )
+                  });
+                }
+
+                if (detail.result.bestPracticesResults) {
+                  const score = typeof detail.result.bestPracticesResults.score === 'number' ? Math.round(detail.result.bestPracticesResults.score) : 0;
+                  layers.push({
+                    key: 'bestPracticesResults',
+                    score,
+                    component: (
+                      <section key="bestPracticesResults" className={`result-layer collapsible ${score === 100 ? 'result-layer-perfect' : ''}`}>
+                        <h4 className="result-layer-header" onClick={(e) => {
+                          const section = e.currentTarget.closest('.result-layer');
+                          section?.classList.toggle('collapsed');
+                        }}>
+                          <span>Best practices</span>
+                          <span className="collapse-icon">▼</span>
+                        </h4>
+                        <div className="result-layer-content">
+                          <div className="result-layer-score">
+                            Score: {score}%
+                          </div>
+                          {detail.result.bestPracticesResults.note && (
+                            <p className="result-issue-msg" style={{ fontStyle: 'italic' }}>{detail.result.bestPracticesResults.note}</p>
+                          )}
+                          {(() => {
+                            const allIssues = [
+                              ...(detail.result.bestPracticesResults.issues || []),
+                              ...(detail.result.bestPracticesResults.details || []).flatMap(d => d.issues || [])
+                            ];
+                            const uniqueIssues = allIssues.filter((issue, idx, arr) => {
+                              const msg = typeof issue === 'string' ? issue : (issue as { message?: string }).message ?? '';
+                              return arr.findIndex(i => (typeof i === 'string' ? i : (i as { message?: string }).message ?? '') === msg) === idx;
+                            });
+                            return uniqueIssues.length > 0 ? (
+                              <>
+                                {uniqueIssues.map((issue, i) => {
+                                  const msg = typeof issue === 'string' ? issue : (issue as { message?: string }).message ?? 'Issue';
+                                  const file = (issue as { file?: string }).file;
+                                  return file ? (
+                                    <div key={i} className="result-issue">
+                                      <strong>{file}</strong>
+                                      <p className="result-issue-msg">• {msg}</p>
+                                    </div>
+                                  ) : (
+                                    <p key={i} className="result-issue-msg">• {msg}</p>
+                                  );
+                                })}
+                              </>
+                            ) : score === 100 ? (
+                              <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}>✅ All best practices requirements met</p>
+                            ) : null;
+                          })()}
+                        </div>
+                      </section>
+                    )
+                  });
+                }
+
+                if (detail.result.e2eResults) {
+                  const score = typeof detail.result.e2eResults.score === 'number' ? Math.round(detail.result.e2eResults.score) : 0;
+                  layers.push({
+                    key: 'e2eResults',
+                    score,
+                    component: (
+                      <section key="e2eResults" className={`result-layer collapsible ${score === 100 ? 'result-layer-perfect' : ''}`}>
+                        <h4 className="result-layer-header" onClick={(e) => {
+                          const section = e.currentTarget.closest('.result-layer');
+                          section?.classList.toggle('collapsed');
+                        }}>
+                          <span>E2E tests</span>
+                          <span className="collapse-icon">▼</span>
+                        </h4>
+                        <div className="result-layer-content">
+                          <div className="result-layer-score">
+                            Score: {score}%
+                            {detail.result.e2eResults.passedTests != null && detail.result.e2eResults.totalTests != null && (
+                              <> · {detail.result.e2eResults.passedTests}/{detail.result.e2eResults.totalTests} passed</>
+                            )}
+                          </div>
+                          {detail.result.e2eResults.error ? (
+                            <p className="result-layer-error">{detail.result.e2eResults.error.split('\n')[0]}</p>
+                          ) : detail.result.e2eResults.note ? (
+                            <p className="result-issue-msg">{detail.result.e2eResults.note}</p>
+                          ) : null}
+                          {(detail.result.e2eResults as { details?: unknown[] }).details?.length ? (
+                            <p className="result-issue-msg">See test output for failed steps.</p>
+                          ) : null}
+                          {score === 100 && !detail.result.e2eResults.error && (
+                            <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}>✅ All E2E tests passed</p>
+                          )}
+                        </div>
+                      </section>
+                    )
+                  });
+                }
+
+                if (detail.result.aiReviewResults || detail.aiFeedback) {
+                  const ai = detail.result.aiReviewResults || (detail.aiFeedback as Record<string, unknown>);
+                  if (ai && !ai.error) {
+                    const score = typeof ai.score === 'number' ? Math.round(ai.score) : 0;
+                    layers.push({
+                      key: 'aiReviewResults',
+                      score,
+                      component: (
+                        <section key="aiReviewResults" className={`result-layer result-layer-ai collapsible ${score === 100 ? 'result-layer-perfect' : ''}`}>
+                          <h4 className="result-layer-header" onClick={(e) => {
+                            const section = e.currentTarget.closest('.result-layer');
+                            section?.classList.toggle('collapsed');
+                          }}>
+                            <span>AI review</span>
+                            <span className="collapse-icon">▼</span>
+                          </h4>
+                          <div className="result-layer-content">
+                            {ai.error ? (
+                              <p className="result-layer-error">
+                                AI review skipped: set GROQ_API_KEY to enable. Other layers still run.
+                              </p>
+                            ) : (
+                              <>
+                                <div className="result-layer-score">
+                                  Score: {score}%
+                                </div>
+                                {ai.overall && (
+                                  <p className="result-ai-overall">{ai.overall as string}</p>
+                                )}
+                                {Array.isArray(ai.strengths) && ai.strengths.length > 0 && (
+                                  <div className="result-ai-list">
+                                    <strong>Strengths</strong>
+                                    <ul>
+                                      {(ai.strengths as string[]).map((s, i) => (
+                                        <li key={i}>{s}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                                {Array.isArray(ai.improvements) && ai.improvements.length > 0 && (
+                                  <div className="result-ai-list">
+                                    <strong>Improvements</strong>
+                                    <ul>
+                                      {(ai.improvements as string[]).map((s, i) => (
+                                        <li key={i}>{s}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                                {score === 100 && (
+                                  <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}>✅ Excellent code quality</p>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </section>
+                      )
+                    });
+                  } else if (ai?.error) {
+                    layers.push({
+                      key: 'aiReviewResults',
+                      score: 0,
+                      component: (
+                        <section key="aiReviewResults" className="result-layer result-layer-ai collapsible">
+                          <h4 className="result-layer-header" onClick={(e) => {
+                            const section = e.currentTarget.closest('.result-layer');
+                            section?.classList.toggle('collapsed');
+                          }}>
+                            <span>AI review</span>
+                            <span className="collapse-icon">▼</span>
+                          </h4>
+                          <div className="result-layer-content">
+                            <p className="result-layer-error">
+                              AI review skipped: set GROQ_API_KEY to enable. Other layers still run.
+                            </p>
+                          </div>
+                        </section>
+                      )
+                    });
+                  }
+                }
+
+                // Sort: non-100% first, then 100% ones
+                layers.sort((a, b) => {
+                  if (a.score === 100 && b.score !== 100) return 1;
+                  if (a.score !== 100 && b.score === 100) return -1;
+                  return 0;
+                });
+
+                return layers.map(l => l.component);
+              })()}
+              </div>
             </div>
           )}
         </div>

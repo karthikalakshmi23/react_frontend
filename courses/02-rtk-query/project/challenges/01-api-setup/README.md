@@ -1,12 +1,8 @@
 # Challenge 01: API Setup and Basic Fetching
 
-## Overview
-
-Set up RTK Query API and create your first data fetching endpoint.
-
 ## Problem Statement
 
-Create an RTK Query API slice that fetches users from the mock API. You'll need to:
+Set up RTK Query API and create your first data fetching endpoint. Create an RTK Query API slice that fetches users from the mock API. You'll need to:
 
 1. Create an API slice using `createApi` from RTK Query
 2. Define a `getUsers` endpoint
@@ -125,14 +121,12 @@ The following industry standards will be checked:
 - **Using the hook**: In `UsersList`, call `useGetUsersQuery()`. It returns `{ data, isLoading, error }`. Handle all three states.
 - **Mock server**: The `mockServer.ts` file provides `mockApi.getUsers()` which returns a Promise. You can use it in a custom `baseQuery` or configure `fetchBaseQuery` to call it.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement the API slice** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check `/challenge/01-api-setup`
 4. **Run review** - `npm run review -- --challenge=01-api-setup` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

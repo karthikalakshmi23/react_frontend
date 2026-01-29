@@ -107,7 +107,6 @@ async function main() {
   console.log('='.repeat(60));
   console.log(`Overall Score: ${courseSummary.averageScore.toFixed(1)}%`);
   console.log(`Completion: ${courseSummary.completionPercentage}%`);
-  console.log(`Badge Level: ${courseSummary.badgeLevel}`);
   console.log(`\n✅ Results saved to: ${RESULTS_DIR}`);
 
   // Update pathway-level progress and course README evidence
@@ -189,13 +188,22 @@ async function reviewChallenge(challenge, config) {
     result.architectureResults = archResults;
     console.log(`   Score: ${archResults.score.toFixed(1)}%`);
     if (archResults.patternsFound && archResults.patternsFound.length > 0) {
-      console.log(`   ✅ Found patterns: ${archResults.patternsFound.join(', ')}`);
+      const uniqueFound = [...new Set(archResults.patternsFound)];
+      console.log(`   ✅ Found: ${uniqueFound.join(', ')}`);
     }
     if (archResults.patternsMissing && archResults.patternsMissing.length > 0) {
-      console.log(`   ❌ Missing patterns: ${archResults.patternsMissing.join(', ')}`);
-      console.log(`   💡 Tip: Check the Architecture Requirements section in the challenge README`);
+      const uniqueMissing = [...new Set(archResults.patternsMissing)];
+      console.log(`   ❌ Missing: ${uniqueMissing.join(', ')}`);
+      if (archResults.details && archResults.details.length > 0) {
+        archResults.details.forEach(d => {
+          if (d.patternsMissing && d.patternsMissing.length > 0) {
+            const fileName = d.file.split(/[/\\]/).pop();
+            console.log(`      In ${fileName}: ${d.patternsMissing.join(', ')}`);
+          }
+        });
+      }
     } else if (archResults.score === 100) {
-      console.log(`   ✅ All required architecture patterns found!`);
+      console.log(`   ✅ All required patterns found!`);
     }
 
     // 4. Best Practices (10%)
@@ -203,19 +211,28 @@ async function reviewChallenge(challenge, config) {
     const bpResults = await checkBestPractices(challengeMetadata, PROJECT_DIR);
     result.scores.bestPractices = bpResults.score;
     result.bestPracticesResults = bpResults;
-    if (bpResults.note) {
-      console.log(`   ${bpResults.note}`);
-    }
     console.log(`   Score: ${bpResults.score.toFixed(1)}%`);
-    if (bpResults.issues && bpResults.issues.length > 0) {
-      console.log(`   ⚠️  Found ${bpResults.issues.length} issue(s):`);
-      bpResults.issues.slice(0, 3).forEach(issue => {
-        console.log(`      - ${issue.message || issue.type || 'Issue'}`);
+    if (bpResults.note) {
+      console.log(`   ℹ️  ${bpResults.note}`);
+    } else if (bpResults.issues && bpResults.issues.length > 0) {
+      const allIssues = bpResults.issues.concat(
+        ...(bpResults.details || []).flatMap(d => d.issues || [])
+      );
+      const uniqueIssues = allIssues.filter((issue, idx, arr) => {
+        const msg = typeof issue === 'string' ? issue : (issue.message || issue.type || '');
+        return arr.findIndex(i => (typeof i === 'string' ? i : (i.message || i.type || '')) === msg) === idx;
       });
-      if (bpResults.issues.length > 3) {
-        console.log(`      ... and ${bpResults.issues.length - 3} more issue(s)`);
+      if (uniqueIssues.length > 0) {
+        console.log(`   ⚠️  Found ${uniqueIssues.length} issue(s):`);
+        uniqueIssues.slice(0, 3).forEach(issue => {
+          const msg = typeof issue === 'string' ? issue : (issue.message || issue.type || 'Issue');
+          console.log(`      - ${msg}`);
+        });
+        if (uniqueIssues.length > 3) {
+          console.log(`      ... and ${uniqueIssues.length - 3} more issue(s)`);
+        }
       }
-    } else if (bpResults.score === 100 && !bpResults.note) {
+    } else if (bpResults.score === 100) {
       console.log(`   ✅ All best practices requirements met!`);
     }
 
@@ -226,13 +243,20 @@ async function reviewChallenge(challenge, config) {
       result.scores.e2eTests = e2eResults.score || 0;
       result.e2eResults = e2eResults;
       console.log(`   Score: ${(e2eResults.score || 0).toFixed(1)}%`);
+      if (e2eResults.passedTests != null && e2eResults.totalTests != null) {
+        console.log(`   Passed: ${e2eResults.passedTests}/${e2eResults.totalTests} tests`);
+      }
       if (e2eResults.error) {
-        console.log(`   ⚠️  Note: ${e2eResults.error}`);
+        console.log(`   ⚠️  Error: ${e2eResults.error.split('\n')[0]}`);
+      } else if (e2eResults.note) {
+        console.log(`   ℹ️  ${e2eResults.note}`);
+      } else if (e2eResults.score === 100) {
+        console.log(`   ✅ All E2E tests passed!`);
       }
     } catch (error) {
-      console.log(`   ⚠️  E2E tests skipped: ${error.message}`);
+      console.log(`   ⚠️  E2E tests failed: ${error.message.split('\n')[0]}`);
       result.scores.e2eTests = 0;
-      result.e2eResults = { error: error.message };
+      result.e2eResults = { error: error.message, note: 'E2E tests require Playwright browsers. Run: npm run setup' };
     }
 
     // 6. AI Review (15%)

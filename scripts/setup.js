@@ -8,19 +8,25 @@
  */
 
 import { execSync } from 'child_process';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = join(__dirname, '..');
+const PATHWAY_CONFIG = join(REPO_ROOT, 'pathway-review', 'pathway-config.json');
 
-const courses = [
-  '01-react-fundamentals',
-  '02-rtk-query',
-  '03-nextjs-app-router'
-];
+function getCourseIds() {
+  if (!existsSync(PATHWAY_CONFIG)) return [];
+  const pathway = JSON.parse(readFileSync(PATHWAY_CONFIG, 'utf-8'));
+  return (pathway.courses || []).map(c => c.id);
+}
+
+const courses = getCourseIds();
+if (courses.length === 0) {
+  console.warn('⚠️  No courses found in pathway-review/pathway-config.json. Add courses there, then run setup again.');
+}
 
 console.log('🚀 Challenge Engine - Complete Setup\n');
 console.log('This will install all dependencies and Playwright browsers.');

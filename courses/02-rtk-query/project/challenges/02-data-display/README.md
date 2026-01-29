@@ -1,12 +1,8 @@
 # Challenge 02: Data Display and Caching
 
-## Overview
-
-Implement data caching, refetching, and display multiple data sources.
-
 ## Problem Statement
 
-Extend your RTK Query setup to:
+Implement data caching, refetching, and display multiple data sources. Extend your RTK Query setup to:
 1. Add a `getPosts` endpoint
 2. Implement caching with tags
 3. Create components to display both users and posts
@@ -103,14 +99,12 @@ The following industry standards will be checked:
 - **Multiple endpoints**: You can add multiple endpoints to the same API slice or create separate slices.
 - **Caching**: RTK Query automatically caches query results. Tags help manage cache invalidation.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement caching** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check `/challenge/02-data-display`
 4. **Run review** - `npm run review -- --challenge=02-data-display` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.

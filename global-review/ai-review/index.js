@@ -11,10 +11,18 @@ import { join } from 'path';
  * Aggregates AI feedback from all courses
  */
 export function aggregateAIFeedback(coursesDir) {
-  const courses = ['01-react-fundamentals', '02-rtk-query', '03-nextjs-app-router'];
+  const rootDir = join(coursesDir, '..');
+  const pathwayPath = join(rootDir, 'pathway-review', 'pathway-config.json');
+  let courseIds = [];
+  if (existsSync(pathwayPath)) {
+    try {
+      const pathway = JSON.parse(readFileSync(pathwayPath, 'utf-8'));
+      courseIds = (pathway.courses || []).map(c => c.id);
+    } catch (e) { /* ignore */ }
+  }
   const aggregatedFeedback = [];
 
-  for (const courseId of courses) {
+  for (const courseId of courseIds) {
     const aiFeedbackPath = join(coursesDir, courseId, 'results', 'ai-feedback.json');
     
     if (existsSync(aiFeedbackPath)) {

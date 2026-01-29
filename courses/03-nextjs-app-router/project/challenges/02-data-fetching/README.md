@@ -1,12 +1,8 @@
 # Challenge 02: Data Fetching and API Routes
 
-## Overview
-
-Implement data fetching in Server Components and create API routes.
-
 ## Problem Statement
 
-Build a data-driven Next.js app that:
+Implement data fetching in Server Components and create API routes. Build a data-driven Next.js app that:
 1. Fetches data in Server Components using async/await
 2. Creates API routes for data endpoints
 3. Displays fetched data on pages
@@ -103,14 +99,12 @@ The following industry standards will be checked:
 - **Server Components**: Make page components async and use `await` to fetch data directly.
 - **Error handling**: Use try-catch in Server Components or error boundaries.
 
-## Help & Completion
-
-- **Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
-- **Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.
-
 ## Next Steps
 
 1. **Read this file** - All requirements are listed above
 2. **Implement API routes and data fetching** - Follow the instructions and requirements
 3. **Verify visually** - Run `npm run dev` and check the posts page
 4. **Run review** - `npm run review -- --challenge=02-data-fetching` to get scored
+
+**Setup**: If you haven't run setup yet, go to repo root and run `npm run setup` to install all dependencies and Playwright browsers.  
+**Full guide**: See repo root [README.md](../../../../../README.md) for setup, workflow, and completion policy.
