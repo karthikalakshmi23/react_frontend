@@ -16,6 +16,8 @@
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
   --progress-bar-transition: width 0.35s ease;
+  --text-muted: #57534e;
+  --track-bg: #e7e5e4;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: #fff; }
@@ -48,18 +50,17 @@ body { margin: 0; background: #fff; }
   background: #fff;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  box-shadow: var(--shadow-sm);
-  border-left: 3px solid var(--orange-500);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .progress-card:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 .progress-card strong {
   display: block;
   font-size: 0.75rem;
-  color: #78716c;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 0.25rem;
@@ -86,8 +87,9 @@ body { margin: 0; background: #fff; }
   color: #c2410c;
 }
 .pagination button:hover:not(:disabled) { background: #ffedd5; }
+.pagination button:focus-visible { outline: 2px solid var(--orange-600); outline-offset: 2px; }
 .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
-.pagination span { font-size: 0.9rem; color: #9a3412; }
+.pagination span { font-size: 0.9rem; color: var(--text-muted); }
 
 .card-list {
   display: flex;
@@ -97,33 +99,35 @@ body { margin: 0; background: #fff; }
 .card {
   background: #fff;
   padding: 1.25rem 1.5rem;
-  border-radius: 10px;
-  box-shadow: var(--shadow-md);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.75rem;
-  border-left: 4px solid transparent;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .card:hover {
-  border-left-color: #fdba74;
-  transform: translateX(4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 .card h3 { margin: 0; font-size: 1rem; color: #1c1917; font-family: var(--font-heading); }
-.card .meta { font-size: 0.85rem; color: #9a3412; }
+.card .meta { font-size: 0.85rem; color: var(--text-muted); }
 .card .badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 500; }
-.card .badge.passed { background: #d4edda; color: #155724; }
-.card .badge.failed { background: #f8d7da; color: #721c24; }
-.card .badge.pending { background: #ffedd5; color: #9a3412; }
+.card .badge.passed { background: #dcfce7; color: #166534; }
+.card .badge.failed { background: #fee2e2; color: #991b1b; }
+.card .badge.pending { background: #f3f4f6; color: var(--text-muted); }
+.badge i { margin-right: 0.35em; }
+.detail-panel .badge.passed { background: #dcfce7; color: #166534; }
+.detail-panel .badge.failed { background: #fee2e2; color: #991b1b; }
+.detail-panel .badge.pending { background: #f3f4f6; color: var(--text-muted); }
 .card button {
   padding: 0.5rem 1rem;
   background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
@@ -140,14 +144,17 @@ body { margin: 0; background: #fff; }
   cursor: wait;
   transform: none;
 }
+.card button:focus-visible {
+  outline: 2px solid var(--orange-600);
+  outline-offset: 2px;
+}
 
 .detail-panel {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: var(--shadow-lg);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
   padding: 2rem;
   margin-top: 1rem;
-  border-top: 4px solid var(--orange-500);
 }
 
 .detail-header {
@@ -207,12 +214,17 @@ body { margin: 0; background: #fff; }
   cursor: wait;
   transform: none;
 }
+.btn-primary:focus-visible {
+  outline: 2px solid var(--orange-600);
+  outline-offset: 2px;
+}
 .btn-icon, .btn-spinner {
   font-size: 0.9em;
   display: inline-block;
+  margin-right: 0.35em;
 }
-.btn-spinner {
-  animation: spin 1s linear infinite;
+.btn-spinner.fa-spin {
+  animation: none;
 }
 @keyframes spin {
   from { transform: rotate(0deg); }
@@ -242,9 +254,12 @@ body { margin: 0; background: #fff; }
 .instructions-header:hover {
   background: #ffedd5;
 }
+.collapse-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
 .instructions-header .collapse-icon {
   font-size: 0.8em;
-  transition: transform 0.2s ease;
   color: #c2410c;
 }
 .instructions-header .collapse-icon.collapsed {
@@ -334,6 +349,7 @@ body { margin: 0; background: #fff; }
   background: #ffedd5;
   border-color: #ea580c;
 }
+.btn-toggle:focus-visible { outline: 2px solid var(--orange-600); outline-offset: 2px; }
 .toggle-icon {
   font-size: 0.75em;
   transition: transform 0.2s ease;
@@ -556,8 +572,9 @@ body { margin: 0; background: #fff; }
   border-color: #ea580c;
   transform: translateX(-2px);
 }
+.detail-panel .back button:focus-visible { outline: 2px solid var(--orange-600); outline-offset: 2px; }
 
-.loading { text-align: center; padding: 2rem; color: #9a3412; }
+.loading { text-align: center; padding: 2rem; color: var(--text-muted); }
 .error { color: #721c24; background: #f8d7da; padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 4px solid #dc2626; }
 
 .view-header {
@@ -622,18 +639,20 @@ body { margin: 0; background: #fff; }
 .challenge-tabs .tab.tab-active:hover {
   background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
 }
+.challenge-tabs .tab:focus-visible { outline: 2px solid var(--orange-600); outline-offset: 2px; }
 
-.breadcrumb { font-size: 0.9rem; color: #9a3412; margin-bottom: 0.5rem; }
+.breadcrumb { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
 .breadcrumb a { color: #c2410c; text-decoration: none; }
+.breadcrumb a:focus-visible { outline: 2px solid var(--orange-600); outline-offset: 2px; }
 .breadcrumb a:hover { text-decoration: underline; }
+.app a:focus-visible { outline: 2px solid var(--orange-600); outline-offset: 2px; }
 
 .pathway-progress {
   background: #fff;
   padding: 1rem 1.25rem;
-  border-radius: 10px;
-  box-shadow: var(--shadow-sm);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
   margin-bottom: 1rem;
-  border-left: 3px solid var(--orange-500);
 }
 .pathway-progress h2 {
   margin: 0 0 0.75rem;
@@ -646,10 +665,9 @@ body { margin: 0; background: #fff; }
 .course-progress-bar {
   background: #fff;
   padding: 0.875rem 1rem;
-  border-radius: 10px;
-  box-shadow: var(--shadow-sm);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
   margin-bottom: 1rem;
-  border-left: 3px solid var(--orange-600);
 }
 .course-progress-stats {
   display: grid;
@@ -664,7 +682,7 @@ body { margin: 0; background: #fff; }
 }
 .stat-label {
   font-size: 0.7rem;
-  color: #78716c;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 500;
@@ -677,8 +695,8 @@ body { margin: 0; background: #fff; }
 .badge-small {
   font-size: 0.75rem;
   padding: 0.2rem 0.5rem;
-  background: #ffedd5;
-  color: #9a3412;
+  background: #f3f4f6;
+  color: var(--text-muted);
   border-radius: 4px;
   display: inline-block;
   text-transform: capitalize;
@@ -689,8 +707,8 @@ body { margin: 0; background: #fff; }
 .progress-bar-slim {
   width: 100%;
   height: 6px;
-  background: #ffedd5;
-  border-radius: 3px;
+  background: var(--track-bg);
+  border-radius: 6px;
   overflow: hidden;
 }
 .progress-bar-fill-slim {
@@ -698,7 +716,7 @@ body { margin: 0; background: #fff; }
   min-width: 0;
   background: linear-gradient(90deg, #ea580c 0%, #f97316 100%);
   transition: var(--progress-bar-transition);
-  border-radius: 3px;
+  border-radius: 6px;
 }
 
 .progress-bar-container {
@@ -706,30 +724,30 @@ body { margin: 0; background: #fff; }
 }
 .progress-bar {
   width: 100%;
-  height: 20px;
-  background: #ffedd5;
-  border-radius: 10px;
+  height: 16px;
+  background: var(--track-bg);
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
-  border: 1px solid #fed7aa;
+  border: 1px solid #d6d3d1;
 }
 .progress-bar-fill {
   height: 100%;
   min-width: 0;
   background: linear-gradient(90deg, #ea580c 0%, #f97316 100%);
   transition: var(--progress-bar-transition);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 .progress-bar-label {
   margin-top: 0.4rem;
   font-size: 0.85rem;
-  color: #9a3412;
+  color: var(--text-muted);
   text-align: center;
 }
 .progress-bar-label-small {
   margin-top: 0.25rem;
   font-size: 0.8rem;
-  color: #9a3412;
+  color: var(--text-muted);
 }
 
 .course-progress-bar-container {

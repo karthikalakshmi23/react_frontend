@@ -341,7 +341,7 @@ export default function App() {
           {/* Celebrations are visual only; no sound. */}
           {pathway.totalChallenges != null && pathway.totalChallenges > 0 && pathway.completedChallenges === pathway.totalChallenges && (
             <div className="celebration celebration-pathway" role="status" aria-live="polite">
-              <span className="celebration-icon">🏆</span>
+              <i className="fa-solid fa-trophy celebration-icon" aria-hidden />
               <div>
                 <strong>Pathway complete!</strong>
                 <p>You&apos;ve passed all challenges. Amazing work!</p>
@@ -451,7 +451,7 @@ export default function App() {
             const completed = cp.completedChallenges ?? 0;
             return total > 0 && completed === total ? (
               <div className="celebration celebration-course" role="status" aria-live="polite">
-                <span className="celebration-icon">⭐</span>
+                <i className="fa-solid fa-star celebration-icon" aria-hidden />
                 <div>
                   <strong>Course complete!</strong>
                   <p>All challenges in {selectedCourse.name} passed. Ready for the next course?</p>
@@ -527,7 +527,7 @@ export default function App() {
                           <h3>{ch.name}</h3>
                           <div className="meta">
                             <span className={`badge ${ch.passed ? 'passed' : ch.score != null ? 'failed' : 'pending'}`}>
-                              {ch.passed ? 'Passed' : ch.score != null ? 'Not passed' : 'Not run'}
+                              {ch.passed ? <><i className="fa-solid fa-check" aria-hidden /> Passed</> : ch.score != null ? <><i className="fa-solid fa-xmark" aria-hidden /> Not passed</> : <><i className="fa-regular fa-circle" aria-hidden /> Not run</>}
                             </span>
                             {score != null && ` · Score: ${score}%`}
                             {ch.lastRun && ` · Last run: ${new Date(ch.lastRun).toLocaleString()}`}
@@ -615,7 +615,7 @@ export default function App() {
               <h2>{detail.name}</h2>
               <div className="detail-meta">
                 <span className={`badge ${detail.passed ? 'passed' : detail.score != null ? 'failed' : 'pending'}`}>
-                  {detail.passed ? '✓ Passed' : detail.score != null ? '✗ Not passed' : '○ Not run'}
+                  {detail.passed ? <><i className="fa-solid fa-check" aria-hidden /> Passed</> : detail.score != null ? <><i className="fa-solid fa-xmark" aria-hidden /> Not passed</> : <><i className="fa-regular fa-circle" aria-hidden /> Not run</>}
                 </span>
                 {detail.score != null && <span className="detail-score">Score: {Math.round(detail.score)}%</span>}
                 {detail.lastRun && (
@@ -645,14 +645,14 @@ export default function App() {
                 </>
               ) : (
                 <>
-                  <span className="btn-icon">▶</span> Run review
+                  <i className="fa-solid fa-play btn-icon" aria-hidden /> Run review
                 </>
               )}
             </button>
           </div>
           {detail.passed && (
             <div className="celebration celebration-challenge" role="status" aria-live="polite">
-              <span className="celebration-icon">✓</span>
+              <i className="fa-solid fa-check celebration-icon" aria-hidden />
               <div>
                 <strong>Challenge passed</strong>
                 <p>Nice work — ready for the next one?</p>
@@ -684,7 +684,7 @@ export default function App() {
                     if (el) el.classList.toggle('collapsed');
                   }}
                 >
-                  <span className="toggle-icon">▼</span> Toggle all
+                  <span className="toggle-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span> Toggle all
                 </button>
               </div>
               <div className="review-results-content">
@@ -717,7 +717,7 @@ export default function App() {
                           if (section) section.classList.toggle('collapsed');
                         }}>
                           <span>Functional tests</span>
-                          <span className="collapse-icon">▼</span>
+                          <span className="collapse-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span>
                         </h4>
                         <div className="result-layer-content">
                           <div className="result-layer-score">
@@ -743,7 +743,7 @@ export default function App() {
                             </div>
                           ))}
                           {score === 100 && (
-                            <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}>✅ All tests passed</p>
+                            <p className="result-issue-msg" style={{ color: '#155724', fontWeight: 500 }}><i className="fa-solid fa-check" aria-hidden /> All tests passed</p>
                           )}
                         </div>
                       </section>
@@ -763,7 +763,7 @@ export default function App() {
                           section?.classList.toggle('collapsed');
                         }}>
                           <span>Code quality (lint)</span>
-                          <span className="collapse-icon">▼</span>
+                          <span className="collapse-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span>
                         </h4>
                         <div className="result-layer-content">
                           <div className="result-layer-score">
@@ -803,7 +803,7 @@ export default function App() {
                           section?.classList.toggle('collapsed');
                         }}>
                           <span>Architecture</span>
-                          <span className="collapse-icon">▼</span>
+                          <span className="collapse-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span>
                         </h4>
                         <div className="result-layer-content">
                           <div className="result-layer-score">
@@ -854,7 +854,7 @@ export default function App() {
                           section?.classList.toggle('collapsed');
                         }}>
                           <span>Best practices</span>
-                          <span className="collapse-icon">▼</span>
+                          <span className="collapse-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span>
                         </h4>
                         <div className="result-layer-content">
                           <div className="result-layer-score">
@@ -909,7 +909,7 @@ export default function App() {
                           section?.classList.toggle('collapsed');
                         }}>
                           <span>E2E tests</span>
-                          <span className="collapse-icon">▼</span>
+                          <span className="collapse-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span>
                         </h4>
                         <div className="result-layer-content">
                           <div className="result-layer-score">
@@ -949,7 +949,7 @@ export default function App() {
                             section?.classList.toggle('collapsed');
                           }}>
                             <span>AI review</span>
-                            <span className="collapse-icon">▼</span>
+                            <span className="collapse-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span>
                           </h4>
                           <div className="result-layer-content">
                             {ai.error ? (
@@ -1004,7 +1004,7 @@ export default function App() {
                             section?.classList.toggle('collapsed');
                           }}>
                             <span>AI review</span>
-                            <span className="collapse-icon">▼</span>
+                            <span className="collapse-icon"><i className="fa-solid fa-chevron-down" aria-hidden /></span>
                           </h4>
                           <div className="result-layer-content">
                             <p className="result-layer-error">
