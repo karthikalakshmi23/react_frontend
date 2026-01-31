@@ -48,15 +48,16 @@ npm run review -- --challenge=01-api-setup
 
 ## 📊 Progress Evidence
 
-*Auto-updated when you run review. Last run: 1/31/2026, 12:25:32 AM*
+*Auto-updated when you run review. Last run: 1/31/2026, 9:38:05 PM*
 
 | Metric | Value |
 |--------|-------|
 | Challenges completed | 0 / 3 (0%) |
-| Average score | 0% |
+| Average score | 16.4% |
 
 | Challenge | Status |
 |-----------|--------|
+| API Setup and Basic Fetching | Fail |
 
 ## 📋 Challenge Workflow
 

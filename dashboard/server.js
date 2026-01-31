@@ -42,7 +42,11 @@ function getCourseConfig(courseId) {
 function getChallengeMetadata(courseId, challengeId) {
   const path = join(ROOT, 'courses', courseId, 'project', 'challenges', challengeId, 'metadata.json');
   if (!existsSync(path)) return null;
-  return JSON.parse(readFileSync(path, 'utf-8'));
+  try {
+    return JSON.parse(readFileSync(path, 'utf-8'));
+  } catch (_) {
+    return null;
+  }
 }
 
 function getChallengeReadme(courseId, challengeId) {
@@ -117,12 +121,17 @@ app.get('/api/courses/:courseId/challenges', (req, res) => {
   const slice = challenges.slice(start, start + limit);
   const progress = getProgress();
   const courseChallenges = progress?.courses?.[req.params.courseId]?.challenges || {};
-  const withProgress = slice.map(c => ({
-    ...c,
-    passed: courseChallenges[c.id]?.passed,
-    score: courseChallenges[c.id]?.score,
-    lastRun: courseChallenges[c.id]?.lastRun,
-  }));
+  const courseId = req.params.courseId;
+  const withProgress = slice.map(c => {
+    const metadata = getChallengeMetadata(courseId, c.id);
+    return {
+      ...c,
+      passed: courseChallenges[c.id]?.passed,
+      score: courseChallenges[c.id]?.score,
+      lastRun: courseChallenges[c.id]?.lastRun,
+      skills: metadata?.skills ?? [],
+    };
+  });
   res.json({
     challenges: withProgress,
     total: challenges.length,
@@ -150,6 +159,7 @@ app.get('/api/courses/:courseId/challenges/:challengeId', (req, res) => {
   res.json({
     ...challenge,
     metadata: metadata || {},
+    skills: metadata?.skills ?? [],
     instructions: readme || '',
     result: result || null,
     aiFeedback: ai,

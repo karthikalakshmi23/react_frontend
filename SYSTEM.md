@@ -50,7 +50,7 @@ Challenge-Engine/
 │   │   ├── project/                 # Runnable app (learner workspace)
 │   │   │   ├── src/                 # Learner code goes here
 │   │   │   ├── challenges/         # Challenge definitions
-│   │   │   │   ├── 01-user-profile/
+│   │   │   │   ├── 01-static-task-display/
 │   │   │   │   │   ├── README.md   # Instructions + Technical Requirements
 │   │   │   │   │   └── metadata.json # Challenge config
 │   │   │   └── tests/               # Test files (don't edit)
@@ -372,7 +372,7 @@ totalScore = (
 1. Calls course review engine with `--challenge=ID`
 2. Updates progress and README evidence
 
-**Usage**: `npm run review:challenge -- --course=01-react-fundamentals --challenge=01-user-profile`
+**Usage**: `npm run review:challenge -- --course=01-react-fundamentals --challenge=01-static-task-display`
 
 ---
 
@@ -559,8 +559,8 @@ Returns challenge detail with:
 **Response**:
 ```json
 {
-  "challengeId": "01-user-profile",
-  "challengeName": "User Profile Component",
+  "challengeId": "01-static-task-display",
+  "challengeName": "Static Task Display",
   "readme": "# Challenge 01...",
   "results": { ... },
   "aiFeedback": { ... }
@@ -576,7 +576,7 @@ Runs review for a challenge
 ```json
 {
   "courseId": "01-react-fundamentals",
-  "challengeId": "01-user-profile"
+  "challengeId": "01-static-task-display"
 }
 ```
 
@@ -647,9 +647,9 @@ Course-level configuration:
   "courseName": "React Fundamentals",
   "challenges": [
     {
-      "id": "01-user-profile",
-      "name": "User Profile Component",
-      "weight": 0.33
+      "id": "01-static-task-display",
+      "name": "Static Task Display",
+      "weight": 0.25
     }
   ],
   "scoring": {
@@ -677,8 +677,8 @@ Challenge-level metadata:
 
 ```json
 {
-  "challengeId": "01-user-profile",
-  "challengeName": "User Profile Component",
+  "challengeId": "01-static-task-display",
+  "challengeName": "Static Task Display",
   "difficulty": "beginner",
   "estimatedTime": "2 hours"
 }

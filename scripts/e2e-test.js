@@ -49,9 +49,9 @@ async function main() {
   }
 
   // 3. Challenge detail (instructions)
-  console.log('\n3. GET /api/courses/01-react-fundamentals/challenges/01-user-profile');
+  console.log('\n3. GET /api/courses/01-react-fundamentals/challenges/01-static-task-display');
   try {
-    const r = await fetch(`${BASE}/api/courses/01-react-fundamentals/challenges/01-user-profile`);
+    const r = await fetch(`${BASE}/api/courses/01-react-fundamentals/challenges/01-static-task-display`);
     if (!r.ok) throw new Error(`Status ${r.status}`);
     const data = await r.json();
     const hasInstructions = (data.instructions || '').length > 0;
@@ -62,16 +62,16 @@ async function main() {
   }
 
   // 4. POST /api/review (run review for one challenge)
-  console.log('\n4. POST /api/review (01-react-fundamentals / 01-user-profile)');
+  console.log('\n4. POST /api/review (01-react-fundamentals / 01-static-task-display)');
   try {
     const r = await fetch(`${BASE}/api/review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ courseId: '01-react-fundamentals', challengeId: '01-user-profile' })
+      body: JSON.stringify({ courseId: '01-react-fundamentals', challengeId: '01-static-task-display' })
     });
     const data = await r.json();
     if (!data.ok) throw new Error(data.error || 'Review failed');
-    console.log('   OK – progress updated, lastRun:', data.progress?.courses?.['01-react-fundamentals']?.challenges?.['01-user-profile']?.lastRun ? 'yes' : '—');
+    console.log('   OK – progress updated, lastRun:', data.progress?.courses?.['01-react-fundamentals']?.challenges?.['01-static-task-display']?.lastRun ? 'yes' : '—');
   } catch (e) {
     console.log('   FAIL –', e.message);
     process.exit(1);

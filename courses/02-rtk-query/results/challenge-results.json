@@ -1,1 +1,135 @@
-[]
+[
+  {
+    "challengeId": "01-api-setup",
+    "challengeName": "API Setup and Basic Fetching",
+    "timestamp": "2026-01-31T16:07:56.888Z",
+    "scores": {
+      "functionalTests": 0,
+      "codeQuality": 50,
+      "architecture": 0,
+      "bestPractices": 88.9,
+      "e2eTests": 0,
+      "aiReview": 0
+    },
+    "totalScore": 16.39,
+    "passed": false,
+    "errors": [],
+    "warnings": [],
+    "testResults": {
+      "score": 0,
+      "passed": false,
+      "error": "Command failed: npm test -- D:\\Workspace\\Projects\\SOLO\\Challenge-Engine\\courses\\02-rtk-query\\project\\tests\\challenge-01.test.tsx --run --reporter=json\nnode:internal/modules/cjs/loader:445\r\n      const err = new Error(\r\n                  ^\r\n\r\nError: Cannot find module 'D:\\Workspace\\Projects\\SOLO\\Challenge-Engine\\courses\\02-rtk-query\\project\\node_modules\\isexe\\index.js'. Please verify that the package.json has a valid \"main\" entry\r\n    at tryPackage (node:internal/modules/cjs/loader:445:19)\r\n    at Module._findPath (node:internal/modules/cjs/loader:716:18)\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1131:27)\r\n    at Module._load (node:internal/modules/cjs/loader:986:27)\r\n    at Module.require (node:internal/modules/cjs/loader:1233:19)\r\n    at require (node:internal/modules/helpers:179:18)\r\n    at Object.<anonymous> (D:\\Workspace\\Projects\\SOLO\\Challenge-Engine\\courses\\02-rtk-query\\project\\node_modules\\which\\which.js:7:15)\r\n    at Module._compile (node:internal/modules/cjs/loader:1358:14)\r\n    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)\r\n    at Module.load (node:internal/modules/cjs/loader:1208:32) {\r\n  code: 'MODULE_NOT_FOUND',\r\n  path: 'D:\\\\Workspace\\\\Projects\\\\SOLO\\\\Challenge-Engine\\\\courses\\\\02-rtk-query\\\\project\\\\node_modules\\\\isexe\\\\package.json',\r\n  requestPath: 'isexe'\r\n}\r\n\r\nNode.js v20.14.0\r\n",
+      "details": []
+    },
+    "lintResults": {
+      "score": 50,
+      "passed": false,
+      "error": "Could not parse linting results",
+      "details": []
+    },
+    "architectureResults": {
+      "score": 0,
+      "passed": false,
+      "patternsFound": [],
+      "patternsMissing": [
+        "createApi",
+        "fetchBaseQuery",
+        "endpoints",
+        "useQueryHook",
+        "createApi",
+        "fetchBaseQuery",
+        "endpoints",
+        "useQueryHook",
+        "createApi",
+        "fetchBaseQuery",
+        "endpoints",
+        "useQueryHook"
+      ],
+      "details": [
+        {
+          "file": "src/api/usersApi.ts",
+          "error": "File does not exist",
+          "patternsFound": [],
+          "patternsMissing": [
+            "createApi",
+            "fetchBaseQuery",
+            "endpoints",
+            "useQueryHook"
+          ]
+        },
+        {
+          "file": "src/store/store.ts",
+          "patternsFound": [],
+          "patternsMissing": [
+            "createApi",
+            "fetchBaseQuery",
+            "endpoints",
+            "useQueryHook"
+          ]
+        },
+        {
+          "file": "src/components/UsersList.tsx",
+          "patternsFound": [],
+          "patternsMissing": [
+            "createApi",
+            "fetchBaseQuery",
+            "endpoints",
+            "useQueryHook"
+          ]
+        },
+        {
+          "file": "src/App.tsx",
+          "patternsFound": [],
+          "patternsMissing": [
+            "createApi",
+            "fetchBaseQuery",
+            "endpoints",
+            "useQueryHook"
+          ]
+        }
+      ]
+    },
+    "bestPracticesResults": {
+      "score": 88.9,
+      "passed": true,
+      "issues": [],
+      "details": [
+        {
+          "file": "src/store/store.ts",
+          "issues": [
+            {
+              "type": "typescript",
+              "message": "Missing type annotations - requirement: TypeScript interfaces for API responses.",
+              "severity": "warning"
+            }
+          ],
+          "score": 66.7
+        },
+        {
+          "file": "src/components/UsersList.tsx",
+          "issues": [],
+          "score": 100
+        },
+        {
+          "file": "src/App.tsx",
+          "issues": [],
+          "score": 100
+        }
+      ]
+    },
+    "e2eResults": {
+      "score": 0,
+      "passed": false,
+      "totalTests": 0,
+      "passedTests": 0,
+      "failedTests": 0,
+      "details": [],
+      "error": "Command failed: npx playwright test \"tests/e2e/challenge-01.spec.ts\" --reporter=json"
+    },
+    "aiReviewResults": {
+      "error": "Functional tests must pass first (undefined/undefined passed)",
+      "score": 0,
+      "skipped": true
+    }
+  }
+]

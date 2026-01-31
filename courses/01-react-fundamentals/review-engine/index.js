@@ -58,27 +58,43 @@ async function main() {
 
   console.log(`📋 Reviewing ${challengesToReview.length} challenge(s)\n`);
 
-  const challengeResults = [];
+  // Load existing results so we only update the challenge(s) we're reviewing (don't wipe others)
+  const challengeResultsPath = join(RESULTS_DIR, 'challenge-results.json');
+  let existingResults = [];
+  if (existsSync(challengeResultsPath)) {
+    try {
+      existingResults = JSON.parse(readFileSync(challengeResultsPath, 'utf-8'));
+      if (!Array.isArray(existingResults)) existingResults = [];
+    } catch (_) {
+      existingResults = [];
+    }
+  }
+  const reviewedIds = new Set(challengesToReview.map(c => c.id));
 
+  const newResults = [];
   for (const challenge of challengesToReview) {
     console.log(`\n${'='.repeat(60)}`);
     console.log(`📝 Challenge: ${challenge.name} (${challenge.id})`);
     console.log('='.repeat(60));
 
     const result = await reviewChallenge(challenge, config);
-    challengeResults.push(result);
+    newResults.push(result);
 
     console.log(`\n✅ Challenge ${challenge.id} completed`);
     console.log(`   Score: ${result.totalScore.toFixed(1)}%`);
   }
 
-  // Generate course summary
-  const courseSummary = generateCourseSummary(challengeResults, config);
-  
-  // Write results
+  // Merge: keep existing results for challenges we did not run; replace with new results for those we ran
+  const mergedResults = existingResults
+    .filter(r => !reviewedIds.has(r.challengeId))
+    .concat(newResults);
+
+  // Generate course summary from full merged results
+  const courseSummary = generateCourseSummary(mergedResults, config);
+
   writeFileSync(
-    join(RESULTS_DIR, 'challenge-results.json'),
-    JSON.stringify(challengeResults, null, 2)
+    challengeResultsPath,
+    JSON.stringify(mergedResults, null, 2)
   );
 
   writeFileSync(
@@ -86,18 +102,27 @@ async function main() {
     JSON.stringify(courseSummary, null, 2)
   );
 
-  // Write AI feedback separately as per project rules
-  const aiFeedback = challengeResults.map(r => ({
-    challengeId: r.challengeId,
-    challengeName: r.challengeName,
-    aiReview: r.aiReviewResults || r.aiResults || null
-  })).filter(f => f.aiReview !== null);
-
-  if (aiFeedback.length > 0) {
-    writeFileSync(
-      join(RESULTS_DIR, 'ai-feedback.json'),
-      JSON.stringify(aiFeedback, null, 2)
-    );
+  // Merge AI feedback: keep existing for challenges we didn't run; add/update for those we ran
+  const newAiFeedback = newResults
+    .filter(r => r.aiReviewResults != null || r.aiResults != null)
+    .map(r => ({
+      challengeId: r.challengeId,
+      challengeName: r.challengeName,
+      aiReview: r.aiReviewResults || r.aiResults || null
+    }));
+  let mergedAiFeedback = [];
+  const aiFeedbackPath = join(RESULTS_DIR, 'ai-feedback.json');
+  if (existsSync(aiFeedbackPath)) {
+    try {
+      const existing = JSON.parse(readFileSync(aiFeedbackPath, 'utf-8'));
+      mergedAiFeedback = Array.isArray(existing)
+        ? existing.filter(f => !reviewedIds.has(f.challengeId))
+        : [];
+    } catch (_) {}
+  }
+  mergedAiFeedback = mergedAiFeedback.concat(newAiFeedback);
+  if (mergedAiFeedback.length > 0) {
+    writeFileSync(aiFeedbackPath, JSON.stringify(mergedAiFeedback, null, 2));
   }
 
   console.log(`\n${'='.repeat(60)}`);
@@ -230,7 +255,7 @@ async function reviewChallenge(challenge, config) {
           console.log(`      ... and ${uniqueIssues.length - 3} more issue(s)`);
         }
       }
-    } else if (bpResults.score === 100) {
+    } else if (bpResults.score === 100 && !bpResults.note) {
       console.log(`   ✅ All best practices requirements met!`);
     }
 

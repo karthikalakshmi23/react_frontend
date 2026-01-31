@@ -1,67 +1,56 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import UserProfile from '../src/components/UserProfile';
+import TaskCard from '../src/components/TaskCard';
+import TaskList from '../src/components/TaskList';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+describe('Challenge 01: Static Task Display', () => {
+  describe('TaskCard', () => {
+    it('should render title, description, and priority', () => {
+      render(
+        <TaskCard title="Test Task" description="Test description" priority="High" />
+      );
+      expect(screen.getByText('Test Task')).toBeInTheDocument();
+      expect(screen.getByText('Test description')).toBeInTheDocument();
+      expect(screen.getByText(/Priority: High/)).toBeInTheDocument();
+    });
 
-describe('Challenge 01: User Profile Component', () => {
-  const mockUser = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: 'https://via.placeholder.com/150'
-  };
+    it('should use article with id task-card', () => {
+      const { container } = render(
+        <TaskCard title="T" description="D" priority="Low" />
+      );
+      const article = container.querySelector('#task-card');
+      expect(article).toBeInTheDocument();
+      expect(article?.tagName.toLowerCase()).toBe('article');
+    });
 
-  it('should render user name', () => {
-    render(<UserProfile name={mockUser.name} email={mockUser.email} />);
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    it('should use semantic HTML (h2 for title)', () => {
+      const { container } = render(
+        <TaskCard title="Title" description="Desc" priority="Medium" />
+      );
+      const h2 = container.querySelector('h2');
+      expect(h2).toHaveTextContent('Title');
+    });
   });
 
-  it('should render user email', () => {
-    render(<UserProfile name={mockUser.name} email={mockUser.email} />);
-    expect(screen.getByText('john@example.com')).toBeInTheDocument();
-  });
+  describe('TaskList', () => {
+    it('should render 3 TaskCards when no tasks prop', () => {
+      const { container } = render(<TaskList />);
+      const cards = container.querySelectorAll('#task-card');
+      expect(cards.length).toBe(3);
+    });
 
-  it('should display avatar or placeholder', () => {
-    // README: "Profile picture (or placeholder)" - either img (avatar) or placeholder must be present
-    const { rerender, container } = render(<UserProfile name={mockUser.name} email={mockUser.email} />);
-    expect(container.querySelector('#user-profile-avatar')).toBeInTheDocument();
+    it('should have section with id task-list', () => {
+      const { container } = render(<TaskList />);
+      const section = container.querySelector('#task-list');
+      expect(section).toBeInTheDocument();
+      expect(section?.tagName.toLowerCase()).toBe('section');
+    });
 
-    rerender(<UserProfile name={mockUser.name} email={mockUser.email} avatar={mockUser.avatar} />);
-    const avatarImg = screen.getByRole('img', { name: /profile/i });
-    expect(avatarImg).toBeInTheDocument();
-    expect(avatarImg).toHaveAttribute('src', mockUser.avatar);
-  });
-
-  it('should render follow button', () => {
-    render(<UserProfile name={mockUser.name} email={mockUser.email} />);
-    expect(screen.getByRole('button', { name: /follow/i })).toBeInTheDocument();
-  });
-
-  it('should toggle follow button state', async () => {
-    const user = userEvent.setup();
-    render(<UserProfile name={mockUser.name} email={mockUser.email} />);
-    
-    const button = screen.getByRole('button', { name: /follow/i });
-    expect(button).toHaveTextContent(/follow/i);
-    
-    await user.click(button);
-    expect(button).toHaveTextContent(/following/i);
-    
-    await user.click(button);
-    expect(button).toHaveTextContent(/follow/i);
-  });
-
-  it('should use useState for button state', () => {
-    // This will be checked via AST parsing in review engine
-    const componentFile = readFileSync(
-      join(__dirname, '../src/components/UserProfile.tsx'),
-      'utf-8'
-    );
-    expect(componentFile).toContain('useState');
+    it('should display three different tasks', () => {
+      render(<TaskList />);
+      expect(screen.getByText('Task One')).toBeInTheDocument();
+      expect(screen.getByText('Task Two')).toBeInTheDocument();
+      expect(screen.getByText('Task Three')).toBeInTheDocument();
+    });
   });
 });

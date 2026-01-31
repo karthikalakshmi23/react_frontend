@@ -1,42 +1,75 @@
 {
-  "lastUpdated": null,
+  "lastUpdated": "2026-01-31T16:12:29.838Z",
   "pathway": {
     "name": "Modern React Engineer",
     "version": "1.0.0",
-    "overallScore": 0,
-    "completionPercentage": 0,
+    "overallScore": 37.8,
+    "completionPercentage": 11.5,
     "badgeLevel": "none",
-    "totalChallenges": 9,
-    "completedChallenges": 0
+    "totalChallenges": 26,
+    "completedChallenges": 3
   },
   "courses": {
     "01-react-fundamentals": {
       "courseId": "01-react-fundamentals",
       "courseName": "React Fundamentals",
-      "averageScore": 0,
-      "completionPercentage": 0,
+      "averageScore": 98.2,
+      "completionPercentage": 15,
       "badgeLevel": "none",
-      "totalChallenges": 3,
-      "completedChallenges": 0,
+      "totalChallenges": 20,
+      "completedChallenges": 3,
       "challenges": {
-        "01-user-profile": {
-          "challengeId": "01-user-profile",
-          "challengeName": "User Profile Component"
+        "01-static-task-display": {
+          "challengeId": "01-static-task-display",
+          "challengeName": "Static Task Display",
+          "passed": true,
+          "score": 98.2,
+          "lastRun": "2026-01-31T15:57:55.886Z",
+          "scores": {
+            "functionalTests": 100,
+            "codeQuality": 100,
+            "architecture": 100,
+            "bestPractices": 100,
+            "e2eTests": 100,
+            "aiReview": 88
+          }
         },
-        "02-todo-list": {
-          "challengeId": "02-todo-list",
-          "challengeName": "Todo List Application"
+        "02-dynamic-task-rendering": {
+          "challengeId": "02-dynamic-task-rendering",
+          "challengeName": "Dynamic Task Rendering",
+          "passed": true,
+          "score": 98.2,
+          "lastRun": "2026-01-31T16:08:14.938Z",
+          "scores": {
+            "functionalTests": 100,
+            "codeQuality": 100,
+            "architecture": 100,
+            "bestPractices": 100,
+            "e2eTests": 100,
+            "aiReview": 88
+          }
         },
-        "03-state-management": {
-          "challengeId": "03-state-management",
-          "challengeName": "State Management with Context"
+        "03-adding-new-tasks": {
+          "challengeId": "03-adding-new-tasks",
+          "challengeName": "Adding New Tasks",
+          "passed": true,
+          "score": 98.2,
+          "lastRun": "2026-01-31T16:12:07.646Z",
+          "scores": {
+            "functionalTests": 100,
+            "codeQuality": 100,
+            "architecture": 100,
+            "bestPractices": 100,
+            "e2eTests": 100,
+            "aiReview": 88
+          }
         }
       }
     },
     "02-rtk-query": {
       "courseId": "02-rtk-query",
       "courseName": "RTK Query",
-      "averageScore": 0,
+      "averageScore": 16.4,
       "completionPercentage": 0,
       "badgeLevel": "none",
       "totalChallenges": 3,
@@ -44,15 +77,18 @@
       "challenges": {
         "01-api-setup": {
           "challengeId": "01-api-setup",
-          "challengeName": "API Setup and Basic Fetching"
-        },
-        "02-data-display": {
-          "challengeId": "02-data-display",
-          "challengeName": "Data Display and Caching"
-        },
-        "03-mutations": {
-          "challengeId": "03-mutations",
-          "challengeName": "Mutations and Optimistic Updates"
+          "challengeName": "API Setup and Basic Fetching",
+          "passed": false,
+          "score": 16.39,
+          "lastRun": "2026-01-31T16:07:56.888Z",
+          "scores": {
+            "functionalTests": 0,
+            "codeQuality": 50,
+            "architecture": 0,
+            "bestPractices": 88.9,
+            "e2eTests": 0,
+            "aiReview": 0
+          }
         }
       }
     },
@@ -64,20 +100,7 @@
       "badgeLevel": "none",
       "totalChallenges": 3,
       "completedChallenges": 0,
-      "challenges": {
-        "01-server-components": {
-          "challengeId": "01-server-components",
-          "challengeName": "Server Components and Basic Routing"
-        },
-        "02-data-fetching": {
-          "challengeId": "02-data-fetching",
-          "challengeName": "Data Fetching and API Routes"
-        },
-        "03-fullstack-features": {
-          "challengeId": "03-fullstack-features",
-          "challengeName": "Fullstack Features and Metadata"
-        }
-      }
+      "challenges": {}
     }
   }
 }

@@ -1,31 +1,23 @@
-/**
- * Challenge 03: State Management with Context
- * Replace this stub with your implementation.
- * Requirements: ThemeProvider, useTheme, theme state (light/dark), persist to localStorage.
- */
+import { createContext, useContext, useState, type ReactNode } from 'react';
 
-import { createContext, useContext, ReactNode } from 'react';
+export type Theme = 'light' | 'dark';
 
-type Theme = 'light' | 'dark';
-
-interface ThemeContextType {
+export interface ThemeContextValue {
   theme: Theme;
+  setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  // TODO: Implement per challenges/03-state-management/README.md
-  return (
-    <ThemeContext.Provider value={{ theme: 'light', toggleTheme: () => {} }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  const [theme, setTheme] = useState<Theme>('light');
+  const toggleTheme = () => setTheme((t) => (t === 'light' ? 'dark' : 'light'));
+  const value = { theme, setTheme, toggleTheme };
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
-export function useTheme() {
-  // TODO: Implement per challenges/03-state-management/README.md
+export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
   return ctx;

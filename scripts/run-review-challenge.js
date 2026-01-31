@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Run review for a single challenge. Updates progress after.
- * Usage: node scripts/run-review-challenge.js --course=01-react-fundamentals --challenge=01-user-profile
+ * Usage: node scripts/run-review-challenge.js --course=01-react-fundamentals --challenge=01-static-task-display
  */
 
 import { execSync } from 'child_process';
@@ -21,7 +21,7 @@ function main() {
   const challengeId = challengeArg ? challengeArg.split('=')[1] : null;
   if (!courseId || !challengeId) {
     console.error('Usage: node scripts/run-review-challenge.js --course=<courseId> --challenge=<challengeId>');
-    console.error('Example: node scripts/run-review-challenge.js --course=01-react-fundamentals --challenge=01-user-profile');
+    console.error('Example: node scripts/run-review-challenge.js --course=01-react-fundamentals --challenge=01-static-task-display');
     process.exit(1);
   }
 

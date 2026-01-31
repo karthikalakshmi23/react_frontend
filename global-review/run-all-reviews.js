@@ -133,10 +133,14 @@ function generatePathwaySummary(courseResults, pathwayConfig, aiInsights) {
     weights
   );
 
-  const totalChallenges = courseSummaries.reduce((sum, c) => sum + (c.completion ? 1 : 0), 0);
-  const completedChallenges = courseSummaries.filter(c => c.completion === 100).length;
-  const completionPercentage = courseSummaries.length > 0
-    ? (completedChallenges / courseSummaries.length) * 100
+  const totalChallenges = courseResults
+    .filter(c => !c.error)
+    .reduce((sum, c) => sum + (c.totalChallenges || 0), 0);
+  const completedChallenges = courseResults
+    .filter(c => !c.error)
+    .reduce((sum, c) => sum + (c.completedChallenges || 0), 0);
+  const completionPercentage = totalChallenges > 0
+    ? (completedChallenges / totalChallenges) * 100
     : 0;
 
   // Determine badge level using scoring engine
@@ -168,7 +172,7 @@ function generatePathwaySummary(courseResults, pathwayConfig, aiInsights) {
     completionPercentage: Math.round(completionPercentage * 10) / 10,
     badgeLevel,
     courses: courseSummaries,
-    totalChallenges: courseSummaries.length,
+    totalChallenges,
     completedChallenges,
     averageScore: overallScore,
     skillStrengths: allStrengths,

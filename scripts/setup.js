@@ -89,18 +89,18 @@ for (const course of courses) {
 }
 console.log('');
 
-// Step 5: Install Playwright browsers for all courses
-console.log('🌐 Step 5/6: Installing Playwright browsers (this may take a few minutes)...');
+// Step 5: Install Playwright browsers (Chromium only) for all courses
+console.log('🌐 Step 5/6: Installing Playwright browsers (Chromium only)...');
 for (const course of courses) {
   const projectDir = join(REPO_ROOT, 'courses', course, 'project');
   if (existsSync(join(projectDir, 'playwright.config.ts')) || existsSync(join(projectDir, 'playwright.config.js'))) {
-    console.log(`   Installing browsers for ${course}...`);
+    console.log(`   Installing Chromium for ${course}...`);
     try {
-      execSync('npx playwright install', { cwd: projectDir, stdio: 'inherit' });
+      execSync('npx playwright install chromium', { cwd: projectDir, stdio: 'inherit' });
       console.log(`   ✅ ${course} browsers installed`);
     } catch (error) {
       console.error(`   ❌ Failed to install browsers for ${course}`);
-      console.error(`   You can install them manually later: cd courses/${course}/project && npx playwright install`);
+      console.error(`   You can install them manually later: cd courses/${course}/project && npm run setup:e2e`);
     }
   }
 }

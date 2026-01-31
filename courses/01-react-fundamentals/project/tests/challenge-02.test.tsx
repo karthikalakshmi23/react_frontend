@@ -1,79 +1,58 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import TodoList from '../src/components/TodoList';
+import TaskList from '../src/components/TaskList';
+import { readFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-describe('Challenge 02: Todo List Application', () => {
-  it('should render input field and add button', () => {
-    render(<TodoList />);
-    expect(screen.getByPlaceholderText(/add todo/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /add/i })).toBeInTheDocument();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const FIVE_TASKS = [
+  { id: 1, title: 'A', description: 'D1', priority: 'High', completed: false },
+  { id: 2, title: 'B', description: 'D2', priority: 'Medium', completed: false },
+  { id: 3, title: 'C', description: 'D3', priority: 'Low', completed: false },
+  { id: 4, title: 'D', description: 'D4', priority: 'High', completed: false },
+  { id: 5, title: 'E', description: 'D5', priority: 'Medium', completed: false },
+];
+
+describe('Challenge 02: Dynamic Task Rendering', () => {
+  it('should render tasks from tasks prop', () => {
+    render(<TaskList tasks={FIVE_TASKS} countText="5 Tasks" />);
+    expect(screen.getByText('A')).toBeInTheDocument();
+    expect(screen.getByText('B')).toBeInTheDocument();
+    expect(screen.getByText('C')).toBeInTheDocument();
+    expect(screen.getByText('D')).toBeInTheDocument();
+    expect(screen.getByText('E')).toBeInTheDocument();
   });
 
-  it('should add a new todo', async () => {
-    const user = userEvent.setup();
-    render(<TodoList />);
-    
-    const input = screen.getByPlaceholderText(/add todo/i);
-    const addButton = screen.getByRole('button', { name: /add/i });
-    
-    await user.type(input, 'Test todo');
-    await user.click(addButton);
-    
-    expect(screen.getByText('Test todo')).toBeInTheDocument();
+  it('should display task count with id task-count', () => {
+    render(<TaskList tasks={FIVE_TASKS} countText="5 Tasks" />);
+    const countEl = screen.getByText('5 Tasks');
+    expect(countEl).toBeInTheDocument();
+    expect(countEl).toHaveAttribute('id', 'task-count');
   });
 
-  it('should toggle todo completion', async () => {
-    const user = userEvent.setup();
-    render(<TodoList />);
-    
-    const input = screen.getByPlaceholderText(/add todo/i);
-    const addButton = screen.getByRole('button', { name: /add/i });
-    
-    await user.type(input, 'Test todo');
-    await user.click(addButton);
-    
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).not.toBeChecked();
-    
-    await user.click(checkbox);
-    expect(checkbox).toBeChecked();
+  it('should use unique keys when mapping (no duplicate keys)', () => {
+    const { container } = render(<TaskList tasks={FIVE_TASKS} countText="5 Tasks" />);
+    const cards = container.querySelectorAll('#task-card');
+    expect(cards.length).toBe(5);
   });
 
-  it('should delete a todo', async () => {
-    const user = userEvent.setup();
-    render(<TodoList />);
-    
-    const input = screen.getByPlaceholderText(/add todo/i);
-    const addButton = screen.getByRole('button', { name: /add/i });
-    
-    await user.type(input, 'Test todo');
-    await user.click(addButton);
-    
-    expect(screen.getByText('Test todo')).toBeInTheDocument();
-    
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
-    await user.click(deleteButton);
-    
-    expect(screen.queryByText('Test todo')).not.toBeInTheDocument();
+  it('should have tasks state in App (useState or useReducer)', () => {
+    const appContent = readFileSync(
+      join(__dirname, '../src/App.tsx'),
+      'utf-8'
+    );
+    const hasTasksState = appContent.includes('useState') || appContent.includes('useReducer');
+    expect(hasTasksState).toBe(true);
   });
 
-  it('should show completed todos with strikethrough', async () => {
-    const user = userEvent.setup();
-    render(<TodoList />);
-    
-    const input = screen.getByPlaceholderText(/add todo/i);
-    const addButton = screen.getByRole('button', { name: /add/i });
-    
-    await user.type(input, 'Test todo');
-    await user.click(addButton);
-    
-    const todoText = screen.getByText('Test todo');
-    const checkbox = screen.getByRole('checkbox');
-    
-    await user.click(checkbox);
-    
-    // Check if completed styling is applied (this depends on implementation)
-    expect(checkbox).toBeChecked();
+  it('should use map in TaskList', () => {
+    const taskListContent = readFileSync(
+      join(__dirname, '../src/components/TaskList.tsx'),
+      'utf-8'
+    );
+    expect(taskListContent).toContain('.map(');
   });
 });

@@ -4,21 +4,26 @@
   "description": "Component-based UI development with modern React patterns",
   "version": "1.0.0",
   "challenges": [
-    {
-      "id": "01-user-profile",
-      "name": "User Profile Component",
-      "weight": 0.33
-    },
-    {
-      "id": "02-todo-list",
-      "name": "Todo List Application",
-      "weight": 0.33
-    },
-    {
-      "id": "03-state-management",
-      "name": "State Management with Context",
-      "weight": 0.34
-    }
+    { "id": "01-static-task-display", "name": "Static Task Display", "weight": 0.05 },
+    { "id": "02-dynamic-task-rendering", "name": "Dynamic Task Rendering", "weight": 0.05 },
+    { "id": "03-adding-new-tasks", "name": "Adding New Tasks", "weight": 0.05 },
+    { "id": "04-task-completion-toggle", "name": "Task Completion Toggle", "weight": 0.05 },
+    { "id": "05-task-deletion", "name": "Task Deletion", "weight": 0.05 },
+    { "id": "06-task-filtering", "name": "Task Filtering", "weight": 0.05 },
+    { "id": "07-priority-based-sorting", "name": "Priority-Based Sorting", "weight": 0.05 },
+    { "id": "08-task-editing", "name": "Task Editing", "weight": 0.05 },
+    { "id": "09-search-functionality", "name": "Search Functionality", "weight": 0.05 },
+    { "id": "10-useeffect-local-storage", "name": "useEffect - Local Storage Persistence", "weight": 0.05 },
+    { "id": "11-useeffect-debounced-search", "name": "useEffect - Debounced Search", "weight": 0.05 },
+    { "id": "12-categories-and-tags", "name": "Categories and Tags", "weight": 0.05 },
+    { "id": "13-due-dates-and-sorting", "name": "Due Dates and Sorting", "weight": 0.05 },
+    { "id": "14-task-statistics-dashboard", "name": "Task Statistics Dashboard", "weight": 0.05 },
+    { "id": "15-component-organization", "name": "Component Organization with Props", "weight": 0.05 },
+    { "id": "16-context-api-theme", "name": "Context API - Theme Management", "weight": 0.05 },
+    { "id": "17-custom-hook-uselocalstorage", "name": "Custom Hook - useLocalStorage", "weight": 0.05 },
+    { "id": "18-usereducer-complex-state", "name": "useReducer - Complex State Management", "weight": 0.05 },
+    { "id": "19-performance-optimization", "name": "Performance Optimization", "weight": 0.05 },
+    { "id": "20-error-boundaries", "name": "Error Boundaries and Error Handling", "weight": 0.05 }
   ],
   "scoring": {
     "functionalTests": 0.35,

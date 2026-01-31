@@ -22,11 +22,28 @@ The app will open at `http://localhost:5173`
 
 ### 3. Work on Challenges
 
-Challenges are embedded in this project. Each challenge adds or modifies functionality:
+Do challenges **in order, one at a time**: read the first challenge README, solve it, run review, then move on to the next. You don't need to read all challenge files upfront. Each README is self-contained for that step.
 
-- **Challenge 01**: User Profile Component (`challenges/01-user-profile/README.md`)
-- **Challenge 02**: Todo List Application (`challenges/02-todo-list/README.md`)
-- **Challenge 03**: State Management with Context (`challenges/03-state-management/README.md`)
+- **Challenge 01**: `challenges/01-static-task-display/README.md`
+- **Challenge 02**: `challenges/02-dynamic-task-rendering/README.md`
+- **Challenge 03**: `challenges/03-adding-new-tasks/README.md`
+- **Challenge 04**: `challenges/04-task-completion-toggle/README.md`
+- **Challenge 05**: `challenges/05-task-deletion/README.md`
+- **Challenge 06**: `challenges/06-task-filtering/README.md`
+- **Challenge 07**: `challenges/07-priority-based-sorting/README.md`
+- **Challenge 08**: `challenges/08-task-editing/README.md`
+- **Challenge 09**: `challenges/09-search-functionality/README.md`
+- **Challenge 10**: `challenges/10-useeffect-local-storage/README.md`
+- **Challenge 11**: `challenges/11-useeffect-debounced-search/README.md`
+- **Challenge 12**: `challenges/12-categories-and-tags/README.md`
+- **Challenge 13**: `challenges/13-due-dates-and-sorting/README.md`
+- **Challenge 14**: `challenges/14-task-statistics-dashboard/README.md`
+- **Challenge 15**: `challenges/15-component-organization/README.md`
+- **Challenge 16**: `challenges/16-context-api-theme/README.md`
+- **Challenge 17**: `challenges/17-custom-hook-uselocalstorage/README.md`
+- **Challenge 18**: `challenges/18-usereducer-complex-state/README.md`
+- **Challenge 19**: `challenges/19-performance-optimization/README.md`
+- **Challenge 20**: `challenges/20-error-boundaries/README.md`
 
 ### 4. Verify Your Work
 
@@ -42,29 +59,31 @@ Challenges are embedded in this project. Each challenge adds or modifies functio
 npm run review
 
 # Review specific challenge
-npm run review -- --challenge=01-user-profile
+npm run review -- --challenge=01-static-task-display
 ```
 
 
 ## 📊 Progress Evidence
 
-*Auto-updated when you run review. Last run: 1/31/2026, 12:25:32 AM*
+*Auto-updated when you run review. Last run: 1/31/2026, 9:42:29 PM*
 
 | Metric | Value |
 |--------|-------|
-| Challenges completed | 0 / 3 (0%) |
-| Average score | 0% |
+| Challenges completed | 3 / 20 (15%) |
+| Average score | 98.2% |
 
 | Challenge | Status |
 |-----------|--------|
+| Static Task Display | Pass |
+| Dynamic Task Rendering | Pass |
+| Adding New Tasks | Pass |
 
 ## 📋 Challenge Workflow
 
-1. **Read the challenge** in `challenges/{challenge-id}/README.md`
-2. **Modify code** in `src/` directory
-3. **Run the app** (`npm run dev`) to see your changes
-4. **Verify visually** that features work correctly
-5. **Run review** (`npm run review`) to get comprehensive scoring
+1. **Read the challenge** in `challenges/{challenge-id}/README.md` (it has all instructions, including wiring and exports)
+2. **Create or update** code in `src/components/` as the README says
+3. **Run the app** (`npm run dev`) when it builds; verify visually
+4. **Run review** (`npm run review`) to get scored
 
 ## 🧪 Testing
 
@@ -75,20 +94,16 @@ npm test
 
 ### E2E Tests (Playwright)
 
-**First-time setup (required once):**
-```bash
-# Install Playwright browsers (required for E2E tests)
-npx playwright install
-```
+**Out of the box:** Chromium is installed automatically after `npm install` (postinstall script) so E2E and review work without extra steps. To skip browser download (e.g. in CI with cached browsers), set `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1` before `npm install`.
 
 **Run E2E tests:**
 ```bash
 npm run test:e2e
 ```
 
-E2E tests verify visual output and user interactions that you can see in the browser.
+**If E2E fails with "Executable doesn't exist":** run `npm run setup:e2e` (installs Chromium only). Or from repo root run `npm run setup` to install for all courses.
 
-**Note:** If you see "Executable doesn't exist" errors, run `npx playwright install` to download the required browsers (Chromium, Firefox, WebKit).
+E2E tests verify visual output and user interactions. When the review runs E2E, it starts the app on port **5174** (CI) to avoid conflict with a dev server on 5173.
 
 ### Review System
 
@@ -106,12 +121,12 @@ The review system runs:
 project/
 ├── src/                    → Your code goes here
 │   ├── components/         → React components
-│   ├── contexts/           → React contexts
 │   └── ...
 ├── challenges/             → Challenge definitions
-│   ├── 01-user-profile/
-│   ├── 02-todo-list/
-│   └── 03-state-management/
+│   ├── 01-static-task-display/
+│   ├── 02-dynamic-task-rendering/
+│   ├── 03-adding-new-tasks/
+│   └── 04-task-completion-toggle/
 ├── tests/                  → Test files
 │   ├── challenge-*.test.tsx  → Unit tests
 │   └── e2e/                → E2E tests (Playwright)

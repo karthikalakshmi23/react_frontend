@@ -68,7 +68,7 @@ node scripts/run-review-changed.js --ref origin/main
 ### Run Review for One Course or One Challenge
 ```bash
 npm run review:course -- --course=01-react-fundamentals
-npm run review:challenge -- --course=01-react-fundamentals --challenge=01-user-profile
+npm run review:challenge -- --course=01-react-fundamentals --challenge=01-static-task-display
 ```
 
 ### Update Progress

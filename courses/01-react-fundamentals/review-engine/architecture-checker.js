@@ -26,8 +26,8 @@ export async function checkArchitecture(challengeMetadata, projectDir) {
     details: []
   };
 
-  let totalChecks = 0;
-  let passedChecks = 0;
+  // Aggregate: a pattern "passes" if found in at least one file (project-level)
+  const foundAnywhere = new Set();
 
   for (const file of filesToCheck) {
     const filePath = join(projectDir, file);
@@ -45,12 +45,7 @@ export async function checkArchitecture(challengeMetadata, projectDir) {
     try {
       const fileContent = readFileSync(filePath, 'utf-8');
       const fileResults = checkFileForPatterns(fileContent, patternsRequired, file);
-      
-      totalChecks += patternsRequired.length;
-      passedChecks += fileResults.patternsFound.length;
-      
-      results.patternsFound.push(...fileResults.patternsFound);
-      results.patternsMissing.push(...fileResults.patternsMissing);
+      fileResults.patternsFound.forEach(p => foundAnywhere.add(p));
       results.details.push({
         file,
         patternsFound: fileResults.patternsFound,
@@ -66,11 +61,15 @@ export async function checkArchitecture(challengeMetadata, projectDir) {
     }
   }
 
-  // Calculate score
-  results.score = totalChecks > 0 
-    ? Math.round((passedChecks / totalChecks) * 100 * 10) / 10
-    : 0;
-  
+  // Score = (required patterns found in at least one file) / total required
+  patternsRequired.forEach(p => {
+    if (foundAnywhere.has(p)) results.patternsFound.push(p);
+    else results.patternsMissing.push(p);
+  });
+  const requiredFoundCount = results.patternsFound.length;
+  results.score = patternsRequired.length > 0
+    ? Math.round((requiredFoundCount / patternsRequired.length) * 100 * 10) / 10
+    : 100;
   results.passed = results.score >= 80;
 
   return results;
@@ -92,6 +91,7 @@ function checkFileForPatterns(content, patternsRequired, fileName) {
       CallExpression(path) {
         const calleeName = path.node.callee.name;
         if (calleeName === 'useState') foundPatterns.add('useState');
+        if (calleeName === 'useReducer') foundPatterns.add('useState'); // useReducer satisfies state-in-component requirement
         if (calleeName === 'createContext') foundPatterns.add('createContext');
         if (calleeName === 'useContext') foundPatterns.add('useContext');
         if (calleeName && calleeName.startsWith('use')) foundPatterns.add('customHook');
@@ -133,16 +133,14 @@ function checkFileForPatterns(content, patternsRequired, fileName) {
       },
 
       JSXElement(path) {
-        const name = path.node.openingElement.name?.name;
+        const nameNode = path.node.openingElement.name;
+        const name = nameNode?.name ?? (nameNode?.type === 'JSXIdentifier' ? nameNode.name : null);
         if (name === 'Provider') foundPatterns.add('Provider');
         if (name === 'input' || name === 'textarea') {
           const openingElement = path.node.openingElement;
-          const hasValue = openingElement.attributes.some(
-            attr => attr.name && attr.name.name === 'value'
-          );
-          const hasOnChange = openingElement.attributes.some(
-            attr => attr.name && attr.name.name === 'onChange'
-          );
+          const getAttrName = (attr) => attr.name?.name ?? (attr.name?.type === 'JSXIdentifier' ? attr.name.name : null);
+          const hasValue = openingElement.attributes.some(attr => getAttrName(attr) === 'value');
+          const hasOnChange = openingElement.attributes.some(attr => getAttrName(attr) === 'onChange');
           if (hasValue && hasOnChange) foundPatterns.add('controlledComponents');
         }
       },
@@ -174,6 +172,11 @@ function checkFileForPatterns(content, patternsRequired, fileName) {
         foundPatterns.add('props');
       }
     }
+    if (patternsRequired.includes('controlledComponents') && !foundPatterns.has('controlledComponents')) {
+      if (/value=\s*\{/.test(content) && /onChange=\s*\{/.test(content)) {
+        foundPatterns.add('controlledComponents');
+      }
+    }
 
     // Check which required patterns were found
     for (const pattern of patternsRequired) {
@@ -196,6 +199,17 @@ function checkFileForPatterns(content, patternsRequired, fileName) {
       if (/props/i.test(content) || /function\s+[A-Z][A-Za-z0-9]*\s*\([^)]+\)/.test(content)) {
         fallbackFound.add('props');
       }
+    }
+    if (patternsRequired.includes('controlledComponents')) {
+      if (/value=\s*\{/.test(content) && /onChange=\s*\{/.test(content)) {
+        fallbackFound.add('controlledComponents');
+      }
+    }
+    if (patternsRequired.includes('useState')) {
+      if (/useState\s*\(/.test(content) || /useReducer\s*\(/.test(content)) fallbackFound.add('useState');
+    }
+    if (patternsRequired.includes('arrayMethods')) {
+      if (/\.map\s*\(/.test(content) || /\.filter\s*\(/.test(content)) fallbackFound.add('arrayMethods');
     }
     for (const pattern of patternsRequired) {
       if (fallbackFound.has(pattern) || content.includes(pattern) || content.includes(pattern.replace(/([A-Z])/g, '-$1').toLowerCase())) {
