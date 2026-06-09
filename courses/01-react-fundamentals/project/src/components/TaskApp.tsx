@@ -1,18 +1,38 @@
-import type { Dispatch, SetStateAction } from 'react'
-import type { Task } from './TaskList'
+import TaskList, { Task } from "./TaskList";
+import TaskForm from "./TaskForm";
 
 interface TaskAppProps {
-  tasks?: Task[]
-  setTasks?: Dispatch<SetStateAction<Task[]>>
-  dispatch?: (action: { type: string; payload?: unknown }) => void
-  showForm?: boolean
-  countFormat?: string
-  showFilterBar?: boolean
-  showStatsPanel?: boolean
-  onDelete?: (id: string | number) => void
-  linkToTaskDetail?: boolean
+  tasks: Task[];
+  setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
+  showForm?: boolean;
+  countFormat?: string;
 }
 
-export default function TaskApp(_props: TaskAppProps) {
-  return null
+function TaskApp({
+  tasks,
+  setTasks,
+  showForm,
+}: TaskAppProps) {
+  const countText = `${tasks.length} Tasks`;
+
+  const handleAddTask = (task: Task) => {
+    if (setTasks) {
+      setTasks((prev) => [...prev, task]);
+    }
+  };
+
+  return (
+    <>
+      {showForm && (
+        <TaskForm onAddTask={handleAddTask} />
+      )}
+
+      <TaskList
+        tasks={tasks}
+        countText={countText}
+      />
+    </>
+  );
 }
+
+export default TaskApp;
