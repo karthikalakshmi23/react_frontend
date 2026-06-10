@@ -1,38 +1,30 @@
-import TaskList, { Task } from "./TaskList";
-import TaskForm from "./TaskForm";
+import type { Dispatch, SetStateAction } from "react";
+import TaskList from "./TaskList";
+import type { Task } from "./TaskList";
 
 interface TaskAppProps {
-  tasks: Task[];
-  setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
+  tasks?: Task[];
+  setTasks?: Dispatch<SetStateAction<Task[]>>;
+  dispatch?: (action: { type: string; payload?: unknown }) => void;
   showForm?: boolean;
   countFormat?: string;
+  showFilterBar?: boolean;
+  showStatsPanel?: boolean;
+  onDelete?: (id: string | number) => void;
+  linkToTaskDetail?: boolean;
 }
 
-function TaskApp({
-  tasks,
-  setTasks,
-  showForm,
-}: TaskAppProps) {
-  const countText = `${tasks.length} Tasks`;
+const HARDCODED_COUNT = 3;
 
-  const handleAddTask = (task: Task) => {
-    if (setTasks) {
-      setTasks((prev) => [...prev, task]);
-    }
-  };
+export default function TaskApp({
+  tasks,
+}: TaskAppProps) {
+  const count = tasks ? tasks.length : HARDCODED_COUNT;
 
   return (
-    <>
-      {showForm && (
-        <TaskForm onAddTask={handleAddTask} />
-      )}
-
-      <TaskList
-        tasks={tasks}
-        countText={countText}
-      />
-    </>
+    <section>
+      <h2 id="task-count">{count} Tasks</h2>
+      <TaskList tasks={tasks} />
+    </section>
   );
 }
-
-export default TaskApp;
