@@ -1,7 +1,7 @@
 import TaskCard from "./TaskCard";
 
 export interface Task {
-  id: number | string;
+  id: string | number;
   title: string;
   description: string;
   priority: string;
@@ -11,14 +11,16 @@ export interface Task {
 interface TaskListProps {
   tasks?: Task[];
   countText?: string;
+  onToggle?: (id: string | number) => void;
+  onDelete?: (id: string | number) => void;
 }
 
-const HARDCODED_TASKS: Task[] = [
+const defaultTasks: Task[] = [
   {
     id: 1,
     title: "Task One",
     description: "Description One",
-    priority: "High",
+    priority: "Low",
     completed: false,
   },
   {
@@ -32,33 +34,35 @@ const HARDCODED_TASKS: Task[] = [
     id: 3,
     title: "Task Three",
     description: "Description Three",
-    priority: "Low",
+    priority: "High",
     completed: false,
   },
 ];
 
-function TaskList({ tasks, countText }: TaskListProps) {
-  const list = tasks ?? HARDCODED_TASKS;
-
+export default function TaskList({
+  tasks = defaultTasks,
+  countText,
+  onToggle,
+  onDelete,
+}: TaskListProps) {
   return (
-    <div>
-      {countText && (
-        <h2 id="task-count">
-          {countText}
-        </h2>
-      )}
     <section id="task-list">
-      {list.map((task) => (
+      <h2 id="task-count">
+        {countText ?? `${tasks.length} Tasks`}
+      </h2>
+
+      {tasks.map((task) => (
         <TaskCard
           key={task.id}
+          id={task.id}
           title={task.title}
           description={task.description}
           priority={task.priority}
+          completed={task.completed}
+          onToggle={onToggle}
+          onDelete={onDelete}
         />
       ))}
     </section>
-    </div>
   );
 }
-
-export default TaskList;
