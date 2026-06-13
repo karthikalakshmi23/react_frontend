@@ -28,3 +28,4 @@ Tests check: Delete button removes task; confirmation dialog appears; canceling 
 
 - `npm run dev` → open `/challenge/05-task-deletion` → click Delete on a task → confirm → task disappears; try again and cancel → task stays.
 - `npm run review -- --challenge=05-task-deletion`
+
