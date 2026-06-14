@@ -136,5 +136,28 @@
       "maintainability": 90,
       "overall": "The code is well-structured, maintainable, and follows best practices. However, there are some minor improvements that could be made to enhance readability and reusability."
     }
+  },
+  {
+    "challengeId": "07-priority-based-sorting",
+    "challengeName": "Priority-Based Sorting",
+    "aiReview": {
+      "challengeId": "07-priority-based-sorting",
+      "timestamp": "2026-06-14T13:05:07.994Z",
+      "score": 88,
+      "feedback": [],
+      "strengths": [
+        "The code is well-structured and follows a consistent naming convention.",
+        "The use of TypeScript and functional components is a good practice.",
+        "The code is relatively easy to understand and follow."
+      ],
+      "improvements": [
+        "The `FilterBar` component could be simplified by using a more concise way of rendering the buttons.",
+        "The `TaskApp` component has a lot of responsibilities, it would be better to break it down into smaller, more focused components.",
+        "The sorting logic could be extracted into a separate function to make it more reusable and easier to test."
+      ],
+      "readability": 85,
+      "maintainability": 90,
+      "overall": "The code is well-structured and follows good practices, but there are some areas that could be improved for better maintainability and readability."
+    }
   }
 ]
