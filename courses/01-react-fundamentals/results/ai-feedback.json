@@ -205,5 +205,28 @@
       "maintainability": 90,
       "overall": "The code is well-structured and follows good practices. However, there are some areas that could be improved for better maintainability and readability."
     }
+  },
+  {
+    "challengeId": "10-useeffect-local-storage",
+    "challengeName": "useEffect - Local Storage Persistence",
+    "aiReview": {
+      "challengeId": "10-useeffect-local-storage",
+      "timestamp": "2026-06-16T06:21:05.879Z",
+      "score": 88,
+      "feedback": [],
+      "strengths": [
+        "Effective use of `useEffect` for handling side effects and persistence",
+        "Clear separation of concerns between task management and routing",
+        "Well-structured code with clear variable names and concise functions"
+      ],
+      "improvements": [
+        "Consider using a more robust error handling mechanism for `JSON.parse` errors",
+        "Some variable names could be more descriptive (e.g., `parsedTasks` could be `loadedTasks`)",
+        "Consider adding a check for `tasks` being an array before calling `JSON.stringify` in the save effect"
+      ],
+      "readability": 85,
+      "maintainability": 90,
+      "overall": "The code is well-structured, readable, and maintainable. It effectively uses `useEffect` to handle persistence and side effects. However, there are some minor improvements that can be made to make the code more robust and efficient."
+    }
   }
 ]
