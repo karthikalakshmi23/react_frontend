@@ -13,7 +13,6 @@ interface TaskListProps {
   countText?: string;
   onToggle?: (id: string | number) => void;
   onDelete?: (id: string | number) => void;
-
   onUpdateTask?: (
     id: string | number,
     updates: {
@@ -22,7 +21,6 @@ interface TaskListProps {
       priority: string;
     }
   ) => void;
-
   editingId?: string | number | null;
   setEditingId?: (
     id: string | number | null
@@ -55,6 +53,7 @@ const defaultTasks: Task[] = [
 
 export default function TaskList({
   tasks = defaultTasks,
+  countText,
   onToggle,
   onDelete,
   onUpdateTask,
@@ -63,6 +62,10 @@ export default function TaskList({
 }: TaskListProps) {
   return (
     <section id="task-list">
+      <h2 id="task-count">
+        {countText ?? `${tasks.length} Tasks`}
+      </h2>
+
       {tasks.map((task) => (
         <TaskCard
           key={task.id}

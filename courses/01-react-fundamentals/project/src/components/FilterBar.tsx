@@ -1,45 +1,86 @@
-type Filter = "all" | "active" | "completed";
-
 interface FilterBarProps {
-  filter: Filter;
-  onFilterChange: (filter: Filter) => void;
-  sortOrder: string;
-  onSortChange: (value: string) => void;
+  filter: "all" | "active" | "completed";
 
-  // Challenge 09
-  searchText?: string;
-  onSearchChange?: (value: string) => void;
-  onClearSearch?: () => void;
+  onFilterChange: (
+    filter: "all" | "active" | "completed"
+  ) => void;
+
+  searchTerm?: string;
+
+  onSearchChange?: (
+    value: string
+  ) => void;
+
+  sortOrder:
+    | "recent"
+    | "high-low"
+    | "low-high"
+    | "alphabetical";
+
+  onSortChange: (
+    sort:
+      | "recent"
+      | "high-low"
+      | "low-high"
+      | "alphabetical"
+  ) => void;
 }
 
-function FilterBar({
+export default function FilterBar({
   filter,
   onFilterChange,
+  searchTerm = "",
+  onSearchChange,
   sortOrder,
   onSortChange,
-  searchText = "",
-  onSearchChange,
-  onClearSearch,
 }: FilterBarProps) {
   return (
     <div id="filter-bar">
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search tasks"
+        value={searchTerm}
+        onChange={(e) =>
+          onSearchChange?.(e.target.value)
+        }
+      />
+
       <button
-        data-active={filter === "all"}
-        onClick={() => onFilterChange("all")}
+        data-active={
+          filter === "all"
+            ? "true"
+            : "false"
+        }
+        onClick={() =>
+          onFilterChange("all")
+        }
       >
         All
       </button>
 
       <button
-        data-active={filter === "active"}
-        onClick={() => onFilterChange("active")}
+        data-active={
+          filter === "active"
+            ? "true"
+            : "false"
+        }
+        onClick={() =>
+          onFilterChange("active")
+        }
       >
         Active
       </button>
 
       <button
-        data-active={filter === "completed"}
-        onClick={() => onFilterChange("completed")}
+        data-active={
+          filter === "completed"
+            ? "true"
+            : "false"
+        }
+        onClick={() =>
+          onFilterChange("completed")
+        }
       >
         Completed
       </button>
@@ -47,17 +88,25 @@ function FilterBar({
       <select
         id="sort-order"
         value={sortOrder}
-        onChange={(e) => onSortChange(e.target.value)}
+        onChange={(e) =>
+          onSortChange(
+            e.target.value as
+              | "recent"
+              | "high-low"
+              | "low-high"
+              | "alphabetical"
+          )
+        }
       >
         <option value="recent">
           Recently Added
         </option>
 
-        <option value="high">
+        <option value="high-low">
           Priority: High to Low
         </option>
 
-        <option value="low">
+        <option value="low-high">
           Priority: Low to High
         </option>
 
@@ -65,28 +114,6 @@ function FilterBar({
           Alphabetical
         </option>
       </select>
-
-      <input
-        id="search-input"
-        type="text"
-        placeholder="Search tasks..."
-        value={searchText}
-        onChange={(e) =>
-          onSearchChange?.(e.target.value)
-        }
-      />
-
-      {searchText.trim() !== "" && (
-        <button
-          id="clear-search"
-          type="button"
-          onClick={() => onClearSearch?.()}
-        >
-          Clear search
-        </button>
-      )}
     </div>
   );
 }
-
-export default FilterBar;

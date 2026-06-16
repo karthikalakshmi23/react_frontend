@@ -1,90 +1,98 @@
-import './App.css'
-import { useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import ChallengeList from './components/ChallengeList'
-import TaskList from './components/TaskList'
-import TaskApp from './components/TaskApp'
-import TaskDetailPage from './components/TaskDetailPage'
-import FetchDemoView from './components/FetchDemoView'
-import { ThemeProvider } from './contexts/ThemeContext'
-import type { Task } from './components/TaskList'
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ChallengeList from "./components/ChallengeList";
+import TaskList from "./components/TaskList";
+import TaskApp from "./components/TaskApp";
+import TaskDetailPage from "./components/TaskDetailPage";
+import FetchDemoView from "./components/FetchDemoView";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import type { Task } from "./components/TaskList";
+
+const STORAGE_KEY = "task-app-tasks";
 
 const INITIAL_TASKS: Task[] = [
   {
     id: 1,
-    title: 'First Task',
-    description: 'Description one',
-    priority: 'High',
+    title: "First Task",
+    description: "Description one",
+    priority: "High",
     completed: false,
   },
   {
     id: 2,
-    title: 'Second Task',
-    description: 'Description two',
-    priority: 'Medium',
+    title: "Second Task",
+    description: "Description two",
+    priority: "Medium",
     completed: false,
   },
   {
     id: 3,
-    title: 'Third Task',
-    description: 'Description three',
-    priority: 'Low',
+    title: "Third Task",
+    description: "Description three",
+    priority: "Low",
     completed: false,
   },
   {
     id: 4,
-    title: 'Fourth Task',
-    description: 'Description four',
-    priority: 'Medium',
+    title: "Fourth Task",
+    description: "Description four",
+    priority: "Medium",
     completed: false,
   },
   {
     id: 5,
-    title: 'Fifth Task',
-    description: 'Description five',
-    priority: 'High',
+    title: "Fifth Task",
+    description: "Description five",
+    priority: "High",
     completed: false,
   },
-]
+];
 
 function AppContent() {
-  const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS)
-
-  useEffect(() => {
+  const [tasks, setTasks] = useState<Task[]>(() => {
     try {
-      const savedTasks = localStorage.getItem('task-app-tasks')
+      const savedTasks =
+        localStorage.getItem(STORAGE_KEY);
 
-      if (savedTasks) {
-        const parsedTasks = JSON.parse(savedTasks)
-
-        if (Array.isArray(parsedTasks)) {
-          setTasks(parsedTasks)
-        }
+      if (!savedTasks) {
+        return INITIAL_TASKS;
       }
+
+      const parsedTasks =
+        JSON.parse(savedTasks);
+
+      return Array.isArray(parsedTasks)
+        ? parsedTasks
+        : INITIAL_TASKS;
     } catch {
-      // Invalid localStorage data; keep INITIAL_TASKS
+      return INITIAL_TASKS;
     }
-  }, [])
+  });
 
   useEffect(() => {
     localStorage.setItem(
-      'task-app-tasks',
+      STORAGE_KEY,
       JSON.stringify(tasks)
-    )
-  }, [tasks])
+    );
+  }, [tasks]);
 
-  const handleDelete = (id: string | number) => {
-    if (window.confirm('Are you sure?')) {
-      setTasks((prev) => prev.filter((t) => t.id !== id))
-    }
-  }
+  const handleDelete = (
+    id: string | number
+  ) => {
+    setTasks((prev) =>
+      prev.filter((t) => t.id !== id)
+    );
+  };
 
   return (
     <BrowserRouter>
       <div className="App">
         <main>
           <Routes>
-            <Route path="/" element={<ChallengeList />} />
+            <Route
+              path="/"
+              element={<ChallengeList />}
+            />
 
             <Route
               path="/challenge/01-static-task-display"
@@ -98,7 +106,6 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm={false}
-                  countFormat="tasks"
                 />
               }
             />
@@ -110,7 +117,6 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
                 />
               }
             />
@@ -122,7 +128,6 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="completed"
                 />
               }
             />
@@ -134,7 +139,6 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
                   onDelete={handleDelete}
                 />
               }
@@ -147,21 +151,6 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
-                  showFilterBar
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/07-priority-based-sorting"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                  showFilterBar
                 />
               }
             />
@@ -173,7 +162,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -185,8 +174,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
-                  showFilterBar
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -198,7 +186,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -210,119 +198,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
-                  showFilterBar
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/12-categories-and-tags"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                  showFilterBar
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/13-due-dates-and-sorting"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                  showFilterBar
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/14-task-statistics-dashboard"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                  showStatsPanel
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/15-component-organization"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/16-context-api-theme"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/17-custom-hook-uselocalstorage"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/18-usereducer-complex-state"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/19-performance-optimization"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                />
-              }
-            />
-
-            <Route
-              path="/challenge/20-error-boundaries"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -334,8 +210,6 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  countFormat="tasks"
-                  linkToTaskDetail
                 />
               }
             />
@@ -349,24 +223,11 @@ function AppContent() {
               path="/challenge/22-data-fetching"
               element={<FetchDemoView />}
             />
-
-            <Route
-              path="/challenge/23-useref-focus-management"
-              element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                  countFormat="tasks"
-                  showFilterBar
-                />
-              }
-            />
           </Routes>
         </main>
       </div>
     </BrowserRouter>
-  )
+  );
 }
 
 function App() {
@@ -374,7 +235,7 @@ function App() {
     <ThemeProvider>
       <AppContent />
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;
