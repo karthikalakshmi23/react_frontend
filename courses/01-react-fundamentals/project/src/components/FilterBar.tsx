@@ -1,19 +1,19 @@
-type Filter = "all" | "active" | "completed";
+import Button from './Button'
+import FormInput from './FormInput'
+
+type Filter = 'all' | 'active' | 'completed'
 
 interface FilterBarProps {
-  filter: Filter;
-  onFilterChange: (filter: Filter) => void;
-
-  sortOrder: string;
-  onSortChange: (value: string) => void;
-
-  searchText: string;
-  onSearchChange: (value: string) => void;
-  onClearSearch: () => void;
-
-  categories: string[];
-  selectedCategory: string;
-  onCategoryChange: (value: string) => void;
+  filter: Filter
+  onFilterChange: (filter: Filter) => void
+  sortOrder: string
+  onSortChange: (value: string) => void
+  searchText: string
+  onSearchChange: (value: string) => void
+  onClearSearch: () => void
+  categories: string[]
+  selectedCategory: string
+  onCategoryChange: (value: string) => void
 }
 
 export default function FilterBar({
@@ -30,94 +30,64 @@ export default function FilterBar({
 }: FilterBarProps) {
   return (
     <div id="filter-bar">
-      <button
-        data-active={filter === "all"}
-        onClick={() => onFilterChange("all")}
+      <Button
+        variant={filter === 'all' ? 'primary' : 'secondary'}
+        onClick={() => onFilterChange('all')}
       >
         All
-      </button>
+      </Button>
 
-      <button
-        data-active={filter === "active"}
-        onClick={() => onFilterChange("active")}
+      <Button
+        variant={filter === 'active' ? 'primary' : 'secondary'}
+        onClick={() => onFilterChange('active')}
       >
         Active
-      </button>
+      </Button>
 
-      <button
-        data-active={filter === "completed"}
-        onClick={() => onFilterChange("completed")}
+      <Button
+        variant={filter === 'completed' ? 'primary' : 'secondary'}
+        onClick={() => onFilterChange('completed')}
       >
         Completed
-      </button>
+      </Button>
 
       <select
         id="sort-order"
         value={sortOrder}
-        onChange={(e) =>
-          onSortChange(e.target.value)
-        }
+        onChange={(e) => onSortChange(e.target.value)}
       >
-        <option value="recent">
-          Recently Added
-        </option>
-
-        <option value="high">
-          Priority: High to Low
-        </option>
-
-        <option value="low">
-          Priority: Low to High
-        </option>
-
-        <option value="alphabetical">
-          Alphabetical
-        </option>
-
-        <option value="due-date">
-          Due Date (Soonest First)
-        </option>
+        <option value="recent">Recently Added</option>
+        <option value="high">Priority: High to Low</option>
+        <option value="low">Priority: Low to High</option>
+        <option value="alphabetical">Alphabetical</option>
+        <option value="due-date">Due Date (Soonest First)</option>
       </select>
 
       <select
         id="category-filter"
         value={selectedCategory}
-        onChange={(e) =>
-          onCategoryChange(e.target.value)
-        }
+        onChange={(e) => onCategoryChange(e.target.value)}
       >
-        <option value="All categories">
-          All categories
-        </option>
-
+        <option value="All categories">All categories</option>
         {categories.map((category) => (
-          <option
-            key={category}
-            value={category}
-          >
-            {category}
-          </option>
+          <option key={category} value={category}>{category}</option>
         ))}
       </select>
 
-      <input
+      <FormInput
         id="search-input"
+        label=""
         type="text"
         placeholder="Search tasks..."
         value={searchText}
-        onChange={(e) =>
-          onSearchChange(e.target.value)
-        }
+        onChange={(e) => onSearchChange(e.target.value)}
       />
 
       {searchText && (
-        <button
-          id="clear-search"
-          onClick={onClearSearch}
-        >
+        <Button id="clear-search" variant="secondary" onClick={onClearSearch}>
           Clear search
-        </button>
+        </Button>
       )}
     </div>
-  );
+  )
 }
