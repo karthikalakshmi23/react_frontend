@@ -1,86 +1,52 @@
+type Filter = "all" | "active" | "completed";
+
 interface FilterBarProps {
-  filter: "all" | "active" | "completed";
+  filter: Filter;
+  onFilterChange: (filter: Filter) => void;
 
-  onFilterChange: (
-    filter: "all" | "active" | "completed"
-  ) => void;
+  sortOrder: string;
+  onSortChange: (value: string) => void;
 
-  searchTerm?: string;
+  searchText: string;
+  onSearchChange: (value: string) => void;
+  onClearSearch: () => void;
 
-  onSearchChange?: (
-    value: string
-  ) => void;
-
-  sortOrder:
-    | "recent"
-    | "high-low"
-    | "low-high"
-    | "alphabetical";
-
-  onSortChange: (
-    sort:
-      | "recent"
-      | "high-low"
-      | "low-high"
-      | "alphabetical"
-  ) => void;
+  categories: string[];
+  selectedCategory: string;
+  onCategoryChange: (value: string) => void;
 }
 
 export default function FilterBar({
   filter,
   onFilterChange,
-  searchTerm = "",
-  onSearchChange,
   sortOrder,
   onSortChange,
+  searchText,
+  onSearchChange,
+  onClearSearch,
+  categories,
+  selectedCategory,
+  onCategoryChange,
 }: FilterBarProps) {
   return (
     <div id="filter-bar">
-      <input
-        id="search-input"
-        type="text"
-        placeholder="Search tasks"
-        value={searchTerm}
-        onChange={(e) =>
-          onSearchChange?.(e.target.value)
-        }
-      />
-
       <button
-        data-active={
-          filter === "all"
-            ? "true"
-            : "false"
-        }
-        onClick={() =>
-          onFilterChange("all")
-        }
+        data-active={filter === "all"}
+        onClick={() => onFilterChange("all")}
       >
         All
       </button>
 
       <button
-        data-active={
-          filter === "active"
-            ? "true"
-            : "false"
-        }
-        onClick={() =>
-          onFilterChange("active")
-        }
+        data-active={filter === "active"}
+        onClick={() => onFilterChange("active")}
       >
         Active
       </button>
 
       <button
-        data-active={
-          filter === "completed"
-            ? "true"
-            : "false"
-        }
-        onClick={() =>
-          onFilterChange("completed")
-        }
+        data-active={filter === "completed"}
+        onClick={() => onFilterChange("completed")}
       >
         Completed
       </button>
@@ -89,31 +55,69 @@ export default function FilterBar({
         id="sort-order"
         value={sortOrder}
         onChange={(e) =>
-          onSortChange(
-            e.target.value as
-              | "recent"
-              | "high-low"
-              | "low-high"
-              | "alphabetical"
-          )
+          onSortChange(e.target.value)
         }
       >
         <option value="recent">
           Recently Added
         </option>
 
-        <option value="high-low">
+        <option value="high">
           Priority: High to Low
         </option>
 
-        <option value="low-high">
+        <option value="low">
           Priority: Low to High
         </option>
 
         <option value="alphabetical">
           Alphabetical
         </option>
+
+        <option value="due-date">
+          Due Date (Soonest First)
+        </option>
       </select>
+
+      <select
+        id="category-filter"
+        value={selectedCategory}
+        onChange={(e) =>
+          onCategoryChange(e.target.value)
+        }
+      >
+        <option value="All categories">
+          All categories
+        </option>
+
+        {categories.map((category) => (
+          <option
+            key={category}
+            value={category}
+          >
+            {category}
+          </option>
+        ))}
+      </select>
+
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search tasks..."
+        value={searchText}
+        onChange={(e) =>
+          onSearchChange(e.target.value)
+        }
+      />
+
+      {searchText && (
+        <button
+          id="clear-search"
+          onClick={onClearSearch}
+        >
+          Clear search
+        </button>
+      )}
     </div>
   );
 }
