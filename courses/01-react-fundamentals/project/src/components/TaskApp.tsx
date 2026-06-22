@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import TaskList from "./TaskList";
 import TaskForm from "./TaskForm";
 import FilterBar from "./FilterBar";
+import StatsPanel from "./StatsPanel";
 import type { Task } from "./TaskList";
 
 interface TaskAppProps {
@@ -12,6 +17,7 @@ interface TaskAppProps {
   showForm?: boolean;
   onDelete?: (id: string | number) => void;
   showFilterBar?: boolean;
+  showStatsPanel?: boolean;
 }
 
 export default function TaskApp({
@@ -20,6 +26,7 @@ export default function TaskApp({
   showForm,
   onDelete,
   showFilterBar,
+  showStatsPanel,
 }: TaskAppProps) {
   const [filter, setFilter] = useState<
     "all" | "active" | "completed"
@@ -42,6 +49,18 @@ export default function TaskApp({
   const [isSearching, setIsSearching] =
     useState(false);
 
+  const [editingId, setEditingId] = useState<
+    string | number | null
+  >(null);
+
+  const categories = [
+    ...new Set(
+      tasks
+        .map((task) => task.category)
+        .filter(Boolean)
+    ),
+  ];
+
   useEffect(() => {
     setIsSearching(true);
 
@@ -52,14 +71,6 @@ export default function TaskApp({
 
     return () => clearTimeout(timer);
   }, [searchText]);
-
-  const categories = [
-    ...new Set(
-      tasks
-        .map((task) => task.category)
-        .filter(Boolean)
-    ),
-  ];
 
   function handleAddTask(task: Task) {
     if (setTasks) {
@@ -80,6 +91,34 @@ export default function TaskApp({
           : task
       )
     );
+  }
+
+  function handleUpdateTask(
+    id: string | number,
+    updates: {
+      title: string;
+      description: string;
+      priority: string;
+    }
+  ) {
+    if (!setTasks) return;
+
+    if (!updates.title.trim()) {
+      return;
+    }
+
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              ...updates,
+            }
+          : task
+      )
+    );
+
+    setEditingId(null);
   }
 
   let filteredTasks =
@@ -152,17 +191,12 @@ export default function TaskApp({
     }
 
     if (sortOrder === "due-date") {
-      if (!a.dueDate && !b.dueDate) {
+      if (!a.dueDate && !b.dueDate)
         return 0;
-      }
 
-      if (!a.dueDate) {
-        return 1;
-      }
+      if (!a.dueDate) return 1;
 
-      if (!b.dueDate) {
-        return -1;
-      }
+      if (!b.dueDate) return -1;
 
       return (
         new Date(a.dueDate).getTime() -
@@ -172,6 +206,40 @@ export default function TaskApp({
 
     return 0;
   });
+
+  const stats = useMemo(() => {
+    const total = tasks.length;
+
+    const completed = tasks.filter(
+      (task) => task.completed
+    ).length;
+
+    const active = total - completed;
+
+    const overdue = tasks.filter(
+      (task) =>
+        !task.completed &&
+        task.dueDate &&
+        new Date(
+          task.dueDate
+        ).getTime() < Date.now()
+    ).length;
+
+    const completedPercentage =
+      total === 0
+        ? 0
+        : Math.round(
+            (completed / total) * 100
+          );
+
+    return {
+      total,
+      completed,
+      active,
+      overdue,
+      completedPercentage,
+    };
+  }, [tasks]);
 
   return (
     <main>
@@ -201,6 +269,18 @@ export default function TaskApp({
         />
       )}
 
+      {showStatsPanel && (
+        <StatsPanel
+          total={stats.total}
+          completed={stats.completed}
+          active={stats.active}
+          overdue={stats.overdue}
+          completedPercentage={
+            stats.completedPercentage
+          }
+        />
+      )}
+
       {isSearching &&
         searchText !==
           debouncedSearchText && (
@@ -223,6 +303,9 @@ export default function TaskApp({
           tasks={sortedTasks}
           onToggle={handleToggle}
           onDelete={onDelete}
+          onUpdateTask={handleUpdateTask}
+          editingId={editingId}
+          setEditingId={setEditingId}
         />
       )}
     </main>
