@@ -26,12 +26,10 @@ function AppContent() {
   const [storedTasks, setStoredTasks] = useLocalStorage<Task[]>('task-app-tasks', INITIAL_TASKS);
   const [tasks, dispatch] = useReducer(taskReducer, storedTasks);
 
-  // Sync reducer state to localStorage whenever tasks change
   useEffect(() => {
     setStoredTasks(tasks);
   }, [tasks, setStoredTasks]);
 
-  // Initialize reducer from localStorage on mount
   useEffect(() => {
     dispatch(setTasks(storedTasks));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,6 +62,7 @@ function AppContent() {
             <Route path="/challenge/16-context-api-theme" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
             <Route path="/challenge/17-custom-hook-uselocalstorage" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
             <Route path="/challenge/18-usereducer-complex-state" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
+            <Route path="/challenge/19-performance-optimization" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
           </Routes>
         </main>
       </div>

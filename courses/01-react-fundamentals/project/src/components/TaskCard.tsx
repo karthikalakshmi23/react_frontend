@@ -1,3 +1,4 @@
+import React from 'react'
 import Badge from './Badge'
 import StatusIndicator from './StatusIndicator'
 import Button from './Button'
@@ -15,7 +16,7 @@ interface TaskCardProps {
   onDelete?: (id: string | number) => void
 }
 
-export default function TaskCard({
+function TaskCard({
   id,
   title,
   description,
@@ -101,3 +102,5 @@ export default function TaskCard({
     </article>
   )
 }
+
+export default React.memo(TaskCard)
