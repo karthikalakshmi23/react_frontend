@@ -1,18 +1,16 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 import TaskList from "./TaskList";
 import TaskForm from "./TaskForm";
 import FilterBar from "./FilterBar";
 import StatsPanel from "./StatsPanel";
 import { useTheme } from "../contexts/ThemeContext";
+import { addTask, updateTask, toggleTask } from "../reducers/taskReducer";
+import type { TaskAction } from "../reducers/taskReducer";
 import type { Task } from "./TaskList";
 
 interface TaskAppProps {
   tasks: Task[];
-  setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
+  dispatch?: React.Dispatch<TaskAction>;
   showForm?: boolean;
   onDelete?: (id: string | number) => void;
   showFilterBar?: boolean;
@@ -21,7 +19,7 @@ interface TaskAppProps {
 
 export default function TaskApp({
   tasks,
-  setTasks,
+  dispatch,
   showForm,
   onDelete,
   showFilterBar,
@@ -51,29 +49,26 @@ export default function TaskApp({
   }, [searchText]);
 
   function handleAddTask(task: Task) {
-    if (setTasks) {
-      setTasks((prev) => [...prev, task]);
+    if (dispatch) {
+      dispatch(addTask(task));
     }
   }
 
   function handleToggle(id: string | number) {
-    if (!setTasks) return;
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+    if (dispatch) {
+      dispatch(toggleTask(id));
+    }
   }
 
   function handleUpdateTask(
     id: string | number,
     updates: { title: string; description: string; priority: string }
   ) {
-    if (!setTasks) return;
+    if (!dispatch) return;
     if (!updates.title.trim()) return;
-    setTasks((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, ...updates } : task))
-    );
+    const existing = tasks.find((t) => t.id === id);
+    if (!existing) return;
+    dispatch(updateTask({ ...existing, ...updates }));
     setEditingId(null);
   }
 
