@@ -7,13 +7,12 @@ import TaskList from "./TaskList";
 import TaskForm from "./TaskForm";
 import FilterBar from "./FilterBar";
 import StatsPanel from "./StatsPanel";
+import { useTheme } from "../contexts/ThemeContext";
 import type { Task } from "./TaskList";
 
 interface TaskAppProps {
   tasks: Task[];
-  setTasks?: React.Dispatch<
-    React.SetStateAction<Task[]>
-  >;
+  setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
   showForm?: boolean;
   onDelete?: (id: string | number) => void;
   showFilterBar?: boolean;
@@ -28,47 +27,26 @@ export default function TaskApp({
   showFilterBar,
   showStatsPanel,
 }: TaskAppProps) {
-  const [filter, setFilter] = useState<
-    "all" | "active" | "completed"
-  >("all");
+  const { theme, toggleTheme } = useTheme();
 
-  const [sortOrder, setSortOrder] =
-    useState("recent");
-
-  const [selectedCategory, setSelectedCategory] =
-    useState("All categories");
-
-  const [searchText, setSearchText] =
-    useState("");
-
-  const [
-    debouncedSearchText,
-    setDebouncedSearchText,
-  ] = useState("");
-
-  const [isSearching, setIsSearching] =
-    useState(false);
-
-  const [editingId, setEditingId] = useState<
-    string | number | null
-  >(null);
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [sortOrder, setSortOrder] = useState("recent");
+  const [selectedCategory, setSelectedCategory] = useState("All categories");
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [editingId, setEditingId] = useState<string | number | null>(null);
 
   const categories = [
-    ...new Set(
-      tasks
-        .map((task) => task.category)
-        .filter(Boolean)
-    ),
+    ...new Set(tasks.map((task) => task.category).filter(Boolean)),
   ];
 
   useEffect(() => {
     setIsSearching(true);
-
     const timer = setTimeout(() => {
       setDebouncedSearchText(searchText);
       setIsSearching(false);
     }, 300);
-
     return () => clearTimeout(timer);
   }, [searchText]);
 
@@ -80,44 +58,22 @@ export default function TaskApp({
 
   function handleToggle(id: string | number) {
     if (!setTasks) return;
-
     setTasks((prev) =>
       prev.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              completed: !task.completed,
-            }
-          : task
+        task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
   }
 
   function handleUpdateTask(
     id: string | number,
-    updates: {
-      title: string;
-      description: string;
-      priority: string;
-    }
+    updates: { title: string; description: string; priority: string }
   ) {
     if (!setTasks) return;
-
-    if (!updates.title.trim()) {
-      return;
-    }
-
+    if (!updates.title.trim()) return;
     setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              ...updates,
-            }
-          : task
-      )
+      prev.map((task) => (task.id === id ? { ...task, ...updates } : task))
     );
-
     setEditingId(null);
   }
 
@@ -125,127 +81,74 @@ export default function TaskApp({
     filter === "all"
       ? tasks
       : filter === "active"
-      ? tasks.filter(
-          (task) => !task.completed
-        )
-      : tasks.filter(
-          (task) => task.completed
-        );
+      ? tasks.filter((task) => !task.completed)
+      : tasks.filter((task) => task.completed);
 
-  if (
-    selectedCategory !==
-    "All categories"
-  ) {
+  if (selectedCategory !== "All categories") {
     filteredTasks = filteredTasks.filter(
-      (task) =>
-        task.category === selectedCategory
+      (task) => task.category === selectedCategory
     );
   }
 
   filteredTasks = filteredTasks.filter(
     (task) =>
-      task.title
-        .toLowerCase()
-        .includes(
-          debouncedSearchText.toLowerCase()
-        ) ||
-      task.description
-        .toLowerCase()
-        .includes(
-          debouncedSearchText.toLowerCase()
-        )
+      task.title.toLowerCase().includes(debouncedSearchText.toLowerCase()) ||
+      task.description.toLowerCase().includes(debouncedSearchText.toLowerCase())
   );
 
-  const priorityValue: Record<
-    string,
-    number
-  > = {
-    High: 3,
-    Medium: 2,
-    Low: 1,
-  };
+  const priorityValue: Record<string, number> = { High: 3, Medium: 2, Low: 1 };
 
-  const sortedTasks = [
-    ...filteredTasks,
-  ].sort((a, b) => {
-    if (sortOrder === "high") {
-      return (
-        priorityValue[b.priority] -
-        priorityValue[a.priority]
-      );
-    }
-
-    if (sortOrder === "low") {
-      return (
-        priorityValue[a.priority] -
-        priorityValue[b.priority]
-      );
-    }
-
-    if (sortOrder === "alphabetical") {
-      return a.title
-        .toLowerCase()
-        .localeCompare(
-          b.title.toLowerCase()
-        );
-    }
-
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    if (sortOrder === "high")
+      return priorityValue[b.priority] - priorityValue[a.priority];
+    if (sortOrder === "low")
+      return priorityValue[a.priority] - priorityValue[b.priority];
+    if (sortOrder === "alphabetical")
+      return a.title.toLowerCase().localeCompare(b.title.toLowerCase());
     if (sortOrder === "due-date") {
-      if (!a.dueDate && !b.dueDate)
-        return 0;
-
+      if (!a.dueDate && !b.dueDate) return 0;
       if (!a.dueDate) return 1;
-
       if (!b.dueDate) return -1;
-
-      return (
-        new Date(a.dueDate).getTime() -
-        new Date(b.dueDate).getTime()
-      );
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     }
-
     return 0;
   });
 
   const stats = useMemo(() => {
     const total = tasks.length;
-
-    const completed = tasks.filter(
-      (task) => task.completed
-    ).length;
-
+    const completed = tasks.filter((task) => task.completed).length;
     const active = total - completed;
-
     const overdue = tasks.filter(
       (task) =>
         !task.completed &&
         task.dueDate &&
-        new Date(
-          task.dueDate
-        ).getTime() < Date.now()
+        new Date(task.dueDate).getTime() < Date.now()
     ).length;
-
     const completedPercentage =
-      total === 0
-        ? 0
-        : Math.round(
-            (completed / total) * 100
-          );
-
-    return {
-      total,
-      completed,
-      active,
-      overdue,
-      completedPercentage,
-    };
+      total === 0 ? 0 : Math.round((completed / total) * 100);
+    return { total, completed, active, overdue, completedPercentage };
   }, [tasks]);
 
   return (
-    <main>
-      {showForm && (
-        <TaskForm onAddTask={handleAddTask} />
-      )}
+    <main style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100vh', padding: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+        <button
+          id="theme-toggle"
+          onClick={toggleTheme}
+          style={{
+            background: 'var(--button-bg)',
+            color: 'var(--button-text)',
+            border: '1px solid var(--border)',
+            padding: '0.4rem 0.8rem',
+            borderRadius: '6px',
+            cursor: 'pointer',
+          }}
+        >
+          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+        </button>
+      </div>
+
+      {showForm && <TaskForm onAddTask={handleAddTask} />}
 
       {showFilterBar && (
         <FilterBar
@@ -260,12 +163,8 @@ export default function TaskApp({
             setDebouncedSearchText("");
           }}
           categories={categories}
-          selectedCategory={
-            selectedCategory
-          }
-          onCategoryChange={
-            setSelectedCategory
-          }
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
         />
       )}
 
@@ -275,29 +174,20 @@ export default function TaskApp({
           completed={stats.completed}
           active={stats.active}
           overdue={stats.overdue}
-          completedPercentage={
-            stats.completedPercentage
-          }
+          completedPercentage={stats.completedPercentage}
         />
       )}
 
-      {isSearching &&
-        searchText !==
-          debouncedSearchText && (
-          <div id="searching-indicator">
-            Searching...
-          </div>
-        )}
+      {isSearching && searchText !== debouncedSearchText && (
+        <div id="searching-indicator">Searching...</div>
+      )}
 
       <div id="task-count">
-        Showing {sortedTasks.length} of{" "}
-        {tasks.length} tasks
+        Showing {sortedTasks.length} of {tasks.length} tasks
       </div>
 
       {sortedTasks.length === 0 ? (
-        <div id="filter-empty-message">
-          No tasks found
-        </div>
+        <div id="filter-empty-message">No tasks found</div>
       ) : (
         <TaskList
           tasks={sortedTasks}

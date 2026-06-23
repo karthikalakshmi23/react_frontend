@@ -66,60 +66,28 @@ const INITIAL_TASKS: Task[] = [
 ];
 
 function AppContent() {
-  const [tasks, setTasks] =
-    useState<Task[]>(() => {
-      try {
-        const savedTasks =
-          localStorage.getItem(
-            STORAGE_KEY
-          );
-
-        if (!savedTasks) {
-          return INITIAL_TASKS;
-        }
-
-        const parsedTasks =
-          JSON.parse(savedTasks);
-
-        if (
-          !Array.isArray(parsedTasks)
-        ) {
-          return INITIAL_TASKS;
-        }
-
-        return parsedTasks.map(
-          (task) => ({
-            ...task,
-            category:
-              task.category ||
-              "General",
-            tags: Array.isArray(
-              task.tags
-            )
-              ? task.tags
-              : [],
-          })
-        );
-      } catch {
-        return INITIAL_TASKS;
-      }
-    });
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const savedTasks = localStorage.getItem(STORAGE_KEY);
+      if (!savedTasks) return INITIAL_TASKS;
+      const parsedTasks = JSON.parse(savedTasks);
+      if (!Array.isArray(parsedTasks)) return INITIAL_TASKS;
+      return parsedTasks.map((task) => ({
+        ...task,
+        category: task.category || "General",
+        tags: Array.isArray(task.tags) ? task.tags : [],
+      }));
+    } catch {
+      return INITIAL_TASKS;
+    }
+  });
 
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(tasks)
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
   }, [tasks]);
 
-  const handleDelete = (
-    id: string | number
-  ) => {
-    setTasks((prev) =>
-      prev.filter(
-        (task) => task.id !== id
-      )
-    );
+  const handleDelete = (id: string | number) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
   return (
@@ -127,12 +95,7 @@ function AppContent() {
       <div className="App">
         <main>
           <Routes>
-            <Route
-              path="/"
-              element={
-                <ChallengeList />
-              }
-            />
+            <Route path="/" element={<ChallengeList />} />
 
             <Route
               path="/challenge/01-static-task-display"
@@ -142,33 +105,21 @@ function AppContent() {
             <Route
               path="/challenge/02-dynamic-task-rendering"
               element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm={false}
-                />
+                <TaskApp tasks={tasks} setTasks={setTasks} showForm={false} />
               }
             />
 
             <Route
               path="/challenge/03-adding-new-tasks"
               element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                />
+                <TaskApp tasks={tasks} setTasks={setTasks} showForm />
               }
             />
 
             <Route
               path="/challenge/04-task-completion-toggle"
               element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                />
+                <TaskApp tasks={tasks} setTasks={setTasks} showForm />
               }
             />
 
@@ -179,9 +130,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  onDelete={
-                    handleDelete
-                  }
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -189,11 +138,7 @@ function AppContent() {
             <Route
               path="/challenge/06-task-filtering"
               element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                />
+                <TaskApp tasks={tasks} setTasks={setTasks} showForm />
               }
             />
 
@@ -204,9 +149,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  onDelete={
-                    handleDelete
-                  }
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -218,9 +161,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  onDelete={
-                    handleDelete
-                  }
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -232,9 +173,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  onDelete={
-                    handleDelete
-                  }
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -246,9 +185,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  onDelete={
-                    handleDelete
-                  }
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -260,9 +197,7 @@ function AppContent() {
                   tasks={tasks}
                   setTasks={setTasks}
                   showForm
-                  onDelete={
-                    handleDelete
-                  }
+                  onDelete={handleDelete}
                 />
               }
             />
@@ -270,25 +205,31 @@ function AppContent() {
             <Route
               path="/challenge/21-react-router"
               element={
-                <TaskApp
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  showForm
-                />
+                <TaskApp tasks={tasks} setTasks={setTasks} showForm />
               }
             />
 
             <Route
               path="/challenge/21-react-router/task/:id"
-              element={
-                <TaskDetailPage />
-              }
+              element={<TaskDetailPage />}
             />
 
             <Route
               path="/challenge/22-data-fetching"
+              element={<FetchDemoView />}
+            />
+
+            <Route
+              path="/challenge/16-context-api-theme"
               element={
-                <FetchDemoView />
+                <TaskApp
+                  tasks={tasks}
+                  setTasks={setTasks}
+                  showForm
+                  onDelete={handleDelete}
+                  showFilterBar
+                  showStatsPanel
+                />
               }
             />
           </Routes>

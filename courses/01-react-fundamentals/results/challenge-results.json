@@ -7088,16 +7088,16 @@
   {
     "challengeId": "15-component-organization",
     "challengeName": "Component Organization with Props",
-    "timestamp": "2026-06-22T20:09:47.551Z",
+    "timestamp": "2026-06-23T05:41:44.424Z",
     "scores": {
       "functionalTests": 100,
       "codeQuality": 100,
       "architecture": 100,
       "bestPractices": 100,
       "e2eTests": 0,
-      "aiReview": 88
+      "aiReview": 94
     },
-    "totalScore": 83.2,
+    "totalScore": 84.1,
     "passed": true,
     "errors": [],
     "warnings": [],
@@ -7118,7 +7118,7 @@
               "fullName": " Challenge 15: Component Organization with Props TaskCard should accept and render props",
               "status": "passed",
               "title": "TaskCard should accept and render props",
-              "duration": 65,
+              "duration": 59,
               "failureMessages": []
             },
             {
@@ -7129,12 +7129,12 @@
               "fullName": " Challenge 15: Component Organization with Props TaskList should render TaskCards with props",
               "status": "passed",
               "title": "TaskList should render TaskCards with props",
-              "duration": 9,
+              "duration": 10,
               "failureMessages": []
             }
           ],
-          "startTime": 1782158991739,
-          "endTime": 1782158991813,
+          "startTime": 1782193312119,
+          "endTime": 1782193312188,
           "status": "passed",
           "message": "",
           "name": "C:/Users/Karthika/OneDrive/Desktop/SPARK+/challenge-engine-react/courses/01-react-fundamentals/project/tests/challenge-15.test.tsx"
@@ -7328,7 +7328,7 @@
                           "stdout": [],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2026-06-22T20:10:03.745Z",
+                          "startTime": "2026-06-23T05:42:06.881Z",
                           "annotations": [],
                           "attachments": []
                         },
@@ -7349,7 +7349,7 @@
                           "stdout": [],
                           "stderr": [],
                           "retry": 1,
-                          "startTime": "2026-06-22T20:10:05.680Z",
+                          "startTime": "2026-06-23T05:42:08.679Z",
                           "annotations": [],
                           "attachments": [
                             {
@@ -7376,7 +7376,7 @@
                           "stdout": [],
                           "stderr": [],
                           "retry": 2,
-                          "startTime": "2026-06-22T20:10:07.635Z",
+                          "startTime": "2026-06-23T05:42:10.582Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -7399,41 +7399,394 @@
     },
     "aiReviewResults": {
       "challengeId": "15-component-organization",
-      "timestamp": "2026-06-22T20:10:08.178Z",
-      "score": 88,
+      "timestamp": "2026-06-23T05:42:11.098Z",
+      "score": 94,
       "feedback": [],
       "strengths": [
-        "Clear and concise code structure, with each component having its own file and interface.",
-        "Effective use of TypeScript interfaces to define component props and types.",
-        "Components are well-organized and easy to understand, with clear documentation of expected props."
+        "The code is well-organized and follows a consistent naming convention.",
+        "The use of TypeScript interfaces and destructuring makes the code more maintainable and easier to understand.",
+        "The components are reusable and can be easily customized using props."
       ],
       "improvements": [
-        "In the `Badge` component, the `variant` and `type` props are not clearly differentiated. Consider renaming `variant` to `type` to avoid confusion.",
-        "In the `StatusIndicator` component, the `status` prop is not validated. Consider adding a type guard to ensure the prop is one of the expected values.",
-        "In the `FormInput` component, the `error` prop is not clearly documented. Consider adding a description of what this prop represents and how it should be used."
+        "In the `Badge` component, the `variant` and `type` props are not clearly documented. Consider adding a comment or type export to explain their usage.",
+        "In the `StatusIndicator` component, the `STATUS_STYLES` object can be extracted into a separate file or a constant to make it easier to manage and maintain.",
+        "In the `FormInput` component, the `error` prop is not properly handled. Consider adding a check to display the error message only when the input is invalid."
       ],
-      "readability": 85,
-      "maintainability": 90,
-      "overall": "The code is well-organized, readable, and maintainable. The components are well-structured, and the use of TypeScript interfaces is effective. However, there are a few areas for improvement, such as clarifying the `variant` and `type` props in the `Badge` component and adding type guards to the `StatusIndicator` component."
+      "readability": 95,
+      "maintainability": 92,
+      "overall": "The code is well-structured and maintainable, with a good use of TypeScript and React features. However, there are some minor improvements that can be made to make the code even better."
     },
     "aiResults": {
       "challengeId": "15-component-organization",
-      "timestamp": "2026-06-22T20:10:08.178Z",
+      "timestamp": "2026-06-23T05:42:11.098Z",
+      "score": 94,
+      "feedback": [],
+      "strengths": [
+        "The code is well-organized and follows a consistent naming convention.",
+        "The use of TypeScript interfaces and destructuring makes the code more maintainable and easier to understand.",
+        "The components are reusable and can be easily customized using props."
+      ],
+      "improvements": [
+        "In the `Badge` component, the `variant` and `type` props are not clearly documented. Consider adding a comment or type export to explain their usage.",
+        "In the `StatusIndicator` component, the `STATUS_STYLES` object can be extracted into a separate file or a constant to make it easier to manage and maintain.",
+        "In the `FormInput` component, the `error` prop is not properly handled. Consider adding a check to display the error message only when the input is invalid."
+      ],
+      "readability": 95,
+      "maintainability": 92,
+      "overall": "The code is well-structured and maintainable, with a good use of TypeScript and React features. However, there are some minor improvements that can be made to make the code even better."
+    }
+  },
+  {
+    "challengeId": "16-context-api-theme",
+    "challengeName": "Context API - Theme Management",
+    "timestamp": "2026-06-23T18:36:51.122Z",
+    "scores": {
+      "functionalTests": 100,
+      "codeQuality": 96,
+      "architecture": 100,
+      "bestPractices": 100,
+      "e2eTests": 0,
+      "aiReview": 88
+    },
+    "totalScore": 82.60000000000001,
+    "passed": true,
+    "errors": [],
+    "warnings": [],
+    "testResults": {
+      "score": 100,
+      "passed": true,
+      "totalTests": 2,
+      "passedTests": 2,
+      "failedTests": 0,
+      "details": [
+        {
+          "assertionResults": [
+            {
+              "ancestorTitles": [
+                "",
+                "Challenge 16: Context API - Theme Management"
+              ],
+              "fullName": " Challenge 16: Context API - Theme Management App should render without crashing",
+              "status": "passed",
+              "title": "App should render without crashing",
+              "duration": 92,
+              "failureMessages": []
+            },
+            {
+              "ancestorTitles": [
+                "",
+                "Challenge 16: Context API - Theme Management"
+              ],
+              "fullName": " Challenge 16: Context API - Theme Management App should have main content",
+              "status": "passed",
+              "title": "App should have main content",
+              "duration": 19,
+              "failureMessages": []
+            }
+          ],
+          "startTime": 1782239816350,
+          "endTime": 1782239816461,
+          "status": "passed",
+          "message": "",
+          "name": "C:/Users/Karthika/OneDrive/Desktop/SPARK+/challenge-engine-react/courses/01-react-fundamentals/project/tests/challenge-16.test.tsx"
+        }
+      ]
+    },
+    "lintResults": {
+      "score": 96,
+      "passed": true,
+      "totalIssues": 2,
+      "errors": 0,
+      "warnings": 2,
+      "details": [
+        {
+          "filePath": "C:\\Users\\Karthika\\OneDrive\\Desktop\\SPARK+\\challenge-engine-react\\courses\\01-react-fundamentals\\project\\src\\App.tsx",
+          "messages": [],
+          "suppressedMessages": [],
+          "errorCount": 0,
+          "fatalErrorCount": 0,
+          "warningCount": 0,
+          "fixableErrorCount": 0,
+          "fixableWarningCount": 0,
+          "usedDeprecatedRules": [
+            {
+              "ruleId": "no-extra-semi",
+              "replacedBy": []
+            },
+            {
+              "ruleId": "no-mixed-spaces-and-tabs",
+              "replacedBy": []
+            }
+          ]
+        },
+        {
+          "filePath": "C:\\Users\\Karthika\\OneDrive\\Desktop\\SPARK+\\challenge-engine-react\\courses\\01-react-fundamentals\\project\\src\\components\\ChallengeList.tsx",
+          "messages": [],
+          "suppressedMessages": [],
+          "errorCount": 0,
+          "fatalErrorCount": 0,
+          "warningCount": 0,
+          "fixableErrorCount": 0,
+          "fixableWarningCount": 0,
+          "usedDeprecatedRules": [
+            {
+              "ruleId": "no-extra-semi",
+              "replacedBy": []
+            },
+            {
+              "ruleId": "no-mixed-spaces-and-tabs",
+              "replacedBy": []
+            }
+          ]
+        },
+        {
+          "filePath": "C:\\Users\\Karthika\\OneDrive\\Desktop\\SPARK+\\challenge-engine-react\\courses\\01-react-fundamentals\\project\\src\\contexts\\ThemeContext.tsx",
+          "messages": [
+            {
+              "ruleId": "react-refresh/only-export-components",
+              "severity": 1,
+              "message": "Fast refresh only works when a file only exports components. Move your React context(s) to a separate file.",
+              "line": 11,
+              "column": 14,
+              "nodeType": "Identifier",
+              "messageId": "reactContext",
+              "endLine": 11,
+              "endColumn": 26
+            },
+            {
+              "ruleId": "react-refresh/only-export-components",
+              "severity": 1,
+              "message": "Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.",
+              "line": 33,
+              "column": 17,
+              "nodeType": "Identifier",
+              "messageId": "namedExport",
+              "endLine": 33,
+              "endColumn": 25
+            }
+          ],
+          "suppressedMessages": [],
+          "errorCount": 0,
+          "fatalErrorCount": 0,
+          "warningCount": 2,
+          "fixableErrorCount": 0,
+          "fixableWarningCount": 0,
+          "source": "import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'\r\n\r\nexport type Theme = 'light' | 'dark'\r\n\r\nexport interface ThemeContextValue {\r\n  theme: Theme\r\n  setTheme: (theme: Theme) => void\r\n  toggleTheme: () => void\r\n}\r\n\r\nexport const ThemeContext = createContext<ThemeContextValue | null>(null)\r\n\r\nexport function ThemeProvider({ children }: { children: ReactNode }) {\r\n  const [theme, setThemeState] = useState<Theme>(() => {\r\n    return (localStorage.getItem('task-app-theme') as Theme) ?? 'light'\r\n  })\r\n\r\n  useEffect(() => {\r\n    localStorage.setItem('task-app-theme', theme)\r\n    document.documentElement.setAttribute('data-theme', theme)\r\n  }, [theme])\r\n\r\n  const setTheme = (t: Theme) => setThemeState(t)\r\n  const toggleTheme = () => setThemeState(prev => prev === 'light' ? 'dark' : 'light')\r\n\r\n  return (\r\n    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>\r\n      {children}\r\n    </ThemeContext.Provider>\r\n  )\r\n}\r\n\r\nexport function useTheme(): ThemeContextValue {\r\n  const ctx = useContext(ThemeContext)\r\n  if (!ctx) throw new Error('useTheme must be used within ThemeProvider')\r\n  return ctx\r\n}\r\n",
+          "usedDeprecatedRules": [
+            {
+              "ruleId": "no-extra-semi",
+              "replacedBy": []
+            },
+            {
+              "ruleId": "no-mixed-spaces-and-tabs",
+              "replacedBy": []
+            }
+          ]
+        }
+      ]
+    },
+    "architectureResults": {
+      "score": 100,
+      "passed": true,
+      "patternsFound": [
+        "functionalComponent",
+        "createContext",
+        "useContext"
+      ],
+      "patternsMissing": [],
+      "details": [
+        {
+          "file": "src/contexts/ThemeContext.tsx",
+          "patternsFound": [
+            "functionalComponent",
+            "createContext",
+            "useContext"
+          ],
+          "patternsMissing": []
+        },
+        {
+          "file": "src/App.tsx",
+          "patternsFound": [
+            "functionalComponent"
+          ],
+          "patternsMissing": [
+            "createContext",
+            "useContext"
+          ]
+        },
+        {
+          "file": "src/components/ChallengeList.tsx",
+          "patternsFound": [
+            "functionalComponent",
+            "useContext"
+          ],
+          "patternsMissing": [
+            "createContext"
+          ]
+        }
+      ]
+    },
+    "bestPracticesResults": {
+      "score": 100,
+      "passed": true,
+      "issues": [],
+      "details": [],
+      "note": "No best practices requirements specified in challenge"
+    },
+    "e2eResults": {
+      "score": 0,
+      "totalTests": 1,
+      "passedTests": 0,
+      "failedTests": 1,
+      "details": [
+        {
+          "title": "challenge-16.spec.ts",
+          "file": "challenge-16.spec.ts",
+          "column": 0,
+          "line": 0,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Challenge 16: Context API Theme - E2E",
+              "file": "challenge-16.spec.ts",
+              "line": 3,
+              "column": 6,
+              "specs": [
+                {
+                  "title": "should display task list",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 0,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 2,
+                          "error": {
+                            "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                            "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          },
+                          "errors": [
+                            {
+                              "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2026-06-23T18:37:09.752Z",
+                          "annotations": [],
+                          "attachments": []
+                        },
+                        {
+                          "workerIndex": 1,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 2,
+                          "error": {
+                            "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                            "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          },
+                          "errors": [
+                            {
+                              "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 1,
+                          "startTime": "2026-06-23T18:37:11.638Z",
+                          "annotations": [],
+                          "attachments": [
+                            {
+                              "name": "trace",
+                              "contentType": "application/zip",
+                              "path": "C:\\Users\\Karthika\\OneDrive\\Desktop\\SPARK+\\challenge-engine-react\\courses\\01-react-fundamentals\\project\\test-results\\challenge-16-Challenge-16--d1ee3-2E-should-display-task-list-chromium-retry1\\trace.zip"
+                            }
+                          ]
+                        },
+                        {
+                          "workerIndex": 2,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 3,
+                          "error": {
+                            "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                            "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          },
+                          "errors": [
+                            {
+                              "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\Karthika\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1208\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 2,
+                          "startTime": "2026-06-23T18:37:13.579Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "3923c1b5135bbbcbba41-0360f6d5a5fe9777b6cf",
+                  "file": "challenge-16.spec.ts",
+                  "line": 8,
+                  "column": 3
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "error": "Command failed: npx playwright test \"tests/e2e/challenge-16.spec.ts\" --reporter=json",
+      "passed": false
+    },
+    "aiReviewResults": {
+      "challengeId": "16-context-api-theme",
+      "timestamp": "2026-06-23T18:37:14.203Z",
       "score": 88,
       "feedback": [],
       "strengths": [
-        "Clear and concise code structure, with each component having its own file and interface.",
-        "Effective use of TypeScript interfaces to define component props and types.",
-        "Components are well-organized and easy to understand, with clear documentation of expected props."
+        "The use of TypeScript and functional components is well-implemented.",
+        "The code is well-structured and organized into separate files for contexts and components.",
+        "The use of React Context API for theme management is a good approach."
       ],
       "improvements": [
-        "In the `Badge` component, the `variant` and `type` props are not clearly differentiated. Consider renaming `variant` to `type` to avoid confusion.",
-        "In the `StatusIndicator` component, the `status` prop is not validated. Consider adding a type guard to ensure the prop is one of the expected values.",
-        "In the `FormInput` component, the `error` prop is not clearly documented. Consider adding a description of what this prop represents and how it should be used."
+        "The `useTheme` hook can be improved by adding a default value for the context value. This will prevent the error that is thrown when the context value is not provided.",
+        "The `ThemeProvider` component can be improved by adding a `theme` prop that allows the consumer to specify the initial theme. This will make it easier to test and debug the component.",
+        "The code can benefit from more comments and documentation. While the code is well-structured, it can be difficult to understand the intent and purpose of certain components and functions without additional context."
       ],
       "readability": 85,
       "maintainability": 90,
-      "overall": "The code is well-organized, readable, and maintainable. The components are well-structured, and the use of TypeScript interfaces is effective. However, there are a few areas for improvement, such as clarifying the `variant` and `type` props in the `Badge` component and adding type guards to the `StatusIndicator` component."
+      "overall": "The code is well-structured and well-implemented, but can benefit from some improvements to make it more maintainable and readable. With some additional comments and documentation, the code can be even more effective and efficient."
+    },
+    "aiResults": {
+      "challengeId": "16-context-api-theme",
+      "timestamp": "2026-06-23T18:37:14.203Z",
+      "score": 88,
+      "feedback": [],
+      "strengths": [
+        "The use of TypeScript and functional components is well-implemented.",
+        "The code is well-structured and organized into separate files for contexts and components.",
+        "The use of React Context API for theme management is a good approach."
+      ],
+      "improvements": [
+        "The `useTheme` hook can be improved by adding a default value for the context value. This will prevent the error that is thrown when the context value is not provided.",
+        "The `ThemeProvider` component can be improved by adding a `theme` prop that allows the consumer to specify the initial theme. This will make it easier to test and debug the component.",
+        "The code can benefit from more comments and documentation. While the code is well-structured, it can be difficult to understand the intent and purpose of certain components and functions without additional context."
+      ],
+      "readability": 85,
+      "maintainability": 90,
+      "overall": "The code is well-structured and well-implemented, but can benefit from some improvements to make it more maintainable and readable. With some additional comments and documentation, the code can be even more effective and efficient."
     }
   }
 ]
