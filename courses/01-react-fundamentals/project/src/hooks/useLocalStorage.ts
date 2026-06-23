@@ -8,7 +8,10 @@ function useLocalStorage<T>(
     try {
       const item = window.localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : initialValue;
-    } catch {
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`useLocalStorage: failed to parse key "${key}"`, error);
+      }
       return initialValue;
     }
   });
@@ -19,8 +22,10 @@ function useLocalStorage<T>(
         value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch {
-      // silently fail
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`useLocalStorage: failed to set key "${key}"`, error);
+      }
     }
   };
 

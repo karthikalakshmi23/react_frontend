@@ -56,13 +56,14 @@ function AppContent() {
             <Route path="/challenge/10-useeffect-local-storage" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} />} />
             <Route path="/challenge/11-useeffect-debounced-search" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} />} />
             <Route path="/challenge/12-categories-and-tags" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} />} />
-            <Route path="/challenge/21-react-router" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm />} />
-            <Route path="/challenge/21-react-router/task/:id" element={<TaskDetailPage />} />
-            <Route path="/challenge/22-data-fetching" element={<FetchDemoView />} />
             <Route path="/challenge/16-context-api-theme" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
             <Route path="/challenge/17-custom-hook-uselocalstorage" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
             <Route path="/challenge/18-usereducer-complex-state" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
             <Route path="/challenge/19-performance-optimization" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
+            <Route path="/challenge/20-error-boundaries" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm onDelete={handleDelete} showFilterBar showStatsPanel />} />
+            <Route path="/challenge/21-react-router" element={<TaskApp tasks={tasks} dispatch={dispatch} showForm />} />
+            <Route path="/challenge/21-react-router/task/:id" element={<TaskDetailPage />} />
+            <Route path="/challenge/22-data-fetching" element={<FetchDemoView />} />
           </Routes>
         </main>
       </div>
