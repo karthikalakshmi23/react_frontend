@@ -1,19 +1,19 @@
-import React from 'react'
-import Badge from './Badge'
-import StatusIndicator from './StatusIndicator'
-import Button from './Button'
+import React, { useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 interface TaskCardProps {
-  id?: string | number
-  title: string
-  description: string
-  priority: string
-  completed?: boolean
-  category?: string
-  tags?: string[]
-  dueDate?: string | number
-  onToggle?: (id: string | number) => void
-  onDelete?: (id: string | number) => void
+  id: string | number;
+  title: string;
+  description: string;
+  priority: string;
+  completed: boolean;
+  onToggle?: (id: string | number) => void;
+  onDelete?: (id: string | number) => void;
+  onUpdate?: (updates: { title: string; description: string; priority: string }) => void;
+  isEditing?: boolean;
+  onEditStart?: () => void;
+  onEditCancel?: () => void;
+  linkToTaskDetail?: boolean;
 }
 
 function TaskCard({
@@ -21,86 +21,97 @@ function TaskCard({
   title,
   description,
   priority,
-  completed = false,
-  category = 'General',
-  tags = [],
-  dueDate,
+  completed,
   onToggle,
   onDelete,
+  onUpdate,
+  isEditing,
+  onEditStart,
+  onEditCancel,
+  linkToTaskDetail,
 }: TaskCardProps) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const handleToggle = useCallback(() => {
+    onToggle?.(id);
+  }, [id, onToggle]);
 
-  let isOverdue = false
-  let isDueToday = false
-  let isDueSoon = false
+  const handleDelete = useCallback(() => {
+    const confirmed = window.confirm("Are you sure?");
+    if (confirmed) onDelete?.(id);
+  }, [id, onDelete]);
 
-  if (dueDate) {
-    const due = new Date(dueDate)
-    due.setHours(0, 0, 0, 0)
-    const difference = (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-    isOverdue = difference < 0 && !completed
-    isDueToday = difference === 0
-    isDueSoon = difference > 0 && difference <= 3
-  }
+  const titleStyle = useMemo(
+    () => ({ textDecoration: completed ? "line-through" : "none" }),
+    [completed]
+  );
 
   return (
-    <article
-      id="task-card"
-      data-completed={completed}
-      data-overdue={isOverdue}
-      style={{
-        backgroundColor: completed ? '#e5ffe5' : 'white',
-        border: isOverdue ? '2px solid red' : '1px solid #ccc',
-      }}
-    >
+    <article id="task-card" data-completed={completed ? "true" : "false"}>
       {onToggle && (
         <input
           type="checkbox"
           checked={completed}
-          onChange={() => onToggle(id!)}
+          onChange={handleToggle}
         />
       )}
-
-      <h2>{title}</h2>
+      <h2 style={titleStyle}>
+        {linkToTaskDetail ? (
+          <Link to={`/challenge/21-react-router/task/${id}`}>{title}</Link>
+        ) : (
+          title
+        )}
+      </h2>
       <p>{description}</p>
-
-      <Badge variant="priority">Priority: {priority}</Badge>
-
-      <div id="task-category">
-        <Badge variant="category">Category: {category}</Badge>
-      </div>
-
-      <div id="task-tags">
-        {tags.map((tag) => (
-          <Badge key={tag} variant="tag">{tag}</Badge>
-        ))}
-      </div>
-
-      {dueDate && (
-        <p id="task-due-date">
-          Due: {new Date(dueDate).toLocaleDateString()}
-        </p>
+      <p>Priority: {priority}</p>
+      <p>Status: {completed ? "Completed" : "Pending"}</p>
+      {onDelete && <button onClick={handleDelete}>Delete</button>}
+      {onEditStart && !isEditing && (
+        <button onClick={onEditStart}>Edit</button>
       )}
-
-      {isOverdue && <StatusIndicator status="overdue" />}
-      {isDueToday && <StatusIndicator status="due-today" />}
-      {isDueSoon && !isDueToday && <StatusIndicator status="due-soon" />}
-
-      {onDelete && (
-        <Button
-          variant="danger"
-          onClick={() => {
-            if (window.confirm('Are you sure?')) {
-              onDelete(id!)
-            }
-          }}
-        >
-          Delete
-        </Button>
+      {isEditing && onUpdate && onEditCancel && (
+        <EditForm
+          title={title}
+          description={description}
+          priority={priority}
+          onUpdate={onUpdate}
+          onCancel={onEditCancel}
+        />
       )}
     </article>
-  )
+  );
 }
 
-export default React.memo(TaskCard)
+function EditForm({
+  title,
+  description,
+  priority,
+  onUpdate,
+  onCancel,
+}: {
+  title: string;
+  description: string;
+  priority: string;
+  onUpdate: (updates: { title: string; description: string; priority: string }) => void;
+  onCancel: () => void;
+}) {
+  const [editTitle, setEditTitle] = React.useState(title);
+  const [editDesc, setEditDesc] = React.useState(description);
+  const [editPriority, setEditPriority] = React.useState(priority);
+
+  return (
+    <div>
+      <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+      <input value={editDesc} onChange={(e) => setEditDesc(e.target.value)} />
+      <select value={editPriority} onChange={(e) => setEditPriority(e.target.value)}>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <button onClick={() => onUpdate({ title: editTitle, description: editDesc, priority: editPriority })}>
+        Save
+      </button>
+      <button onClick={onCancel}>Cancel</button>
+    </div>
+  );
+}
+
+export default React.memo(TaskCard);
